@@ -105,17 +105,31 @@ export const ALGORITHMS = {
   }
 };
 
+/**
+ * Parsează un string de numere separate prin virgulă sau spații.
+ * @param {string} input - Ex: "8, 2, 6, 1, 4" sau "8 2 6 1 4"
+ * @returns {number[]} Array de numere finite
+ */
 export function parseVector(input) {
   return input
     .split(/[\s,]+/)
+    .filter((x) => x.trim() !== "")
     .map((x) => Number(x.trim()))
     .filter((x) => Number.isFinite(x));
 }
 
+/** @param {any} arr @returns {any} */
 function clone(arr) {
   return JSON.parse(JSON.stringify(arr));
 }
 
+/**
+ * Generează pașii de vizualizare pentru Bubble Sort.
+ * Fiecare pas conține starea completă a vectorului, indicii activi
+ * și pseudoLine pentru sincronizarea cu pseudocodul și codul C++.
+ * @param {number[]} vector - Vectorul de sortat
+ * @returns {Array<{array:number[], active?:number[], swapped?:boolean, message:string, pseudoLine:number}>}
+ */
 export function bubbleSortSteps(vector) {
   const a = [...vector];
   const steps = [{ array: [...a], message: "Vector inițial", pseudoLine: -1 }];
@@ -134,6 +148,12 @@ export function bubbleSortSteps(vector) {
   return steps;
 }
 
+/**
+ * Generează pașii de vizualizare pentru Selection Sort.
+ * Urmărește minimul curent (minIdx) și câte elemente sunt deja sortate (sortedUpTo).
+ * @param {number[]} vector - Vectorul de sortat
+ * @returns {Array<{array:number[], active?:number[], minIdx?:number, sortedUpTo?:number, message:string, pseudoLine:number}>}
+ */
 export function selectionSortSteps(vector) {
   const a = [...vector];
   const steps = [{ array: [...a], message: "Vector inițial", pseudoLine: -1 }];
@@ -161,6 +181,12 @@ export function selectionSortSteps(vector) {
   return steps;
 }
 
+/**
+ * Generează pașii de vizualizare pentru Quick Sort (partiție Lomuto).
+ * Fiecare pas marchează pivotul, elementele comparate și intervalul activ.
+ * @param {number[]} vector - Vectorul de sortat
+ * @returns {Array<{array:number[], active?:number[], pivot?:number, range?:number[], message:string, pseudoLine:number}>}
+ */
 export function quickSortSteps(vector) {
   const a = [...vector];
   const steps = [{ array: [...a], message: "Vector inițial", pseudoLine: -1 }];
@@ -197,6 +223,13 @@ export function quickSortSteps(vector) {
   return steps;
 }
 
+/**
+ * Generează pașii de vizualizare pentru Căutarea Binară.
+ * Vectorul este sortat automat înainte de căutare.
+ * @param {number[]} vector - Vectorul în care se caută (va fi sortat)
+ * @param {number} target - Valoarea căutată
+ * @returns {Array<{array:number[], left:number, right:number, mid:number|null, found:boolean, target:number, message:string, pseudoLine:number}>}
+ */
 export function binarySearchSteps(vector, target) {
   const a = [...vector].sort((x, y) => x - y);
   const steps = [{ array: [...a], left: 0, right: a.length - 1, mid: null, found: false, target, message: `Căutăm ${target} în vectorul sortat`, pseudoLine: 0 }];
@@ -226,6 +259,14 @@ export function binarySearchSteps(vector, target) {
   return steps;
 }
 
+/**
+ * Generează pașii de vizualizare pentru BFS (Breadth-First Search).
+ * Graful este reprezentat ca listă de adiacență. Pașii urmăresc coada,
+ * ordinea de vizitare și nodul curent/următor pentru animația SVG.
+ * @param {Object.<string, string[]>} graph - Lista de adiacență
+ * @param {string} start - Nodul de start
+ * @returns {Array<{graph:Object, queue:string[], order:string[], current:string|null, next?:string, message:string, pseudoLine:number}>}
+ */
 export function bfsSteps(graph, start) {
   const visited = new Set();
   const queue = [start];
@@ -253,6 +294,13 @@ export function bfsSteps(graph, start) {
   return steps;
 }
 
+/**
+ * Generează pașii de vizualizare pentru DFS (Depth-First Search) iterativ.
+ * Folosește o stivă explicită pentru a evita stack overflow pe grafuri mari.
+ * @param {Object.<string, string[]>} graph - Lista de adiacență
+ * @param {string} start - Nodul de start
+ * @returns {Array<{graph:Object, stack:string[], order:string[], current:string|null, next?:string, message:string, pseudoLine:number}>}
+ */
 export function dfsSteps(graph, start) {
   const visited = new Set();
   const stack = [start];
@@ -280,6 +328,12 @@ export function dfsSteps(graph, start) {
   return steps;
 }
 
+/**
+ * Dispatcher principal — selectează generatorul de pași potrivit.
+ * @param {string} algorithmId - Id-ul algoritmului (ex: "bubbleSort", "bfs")
+ * @param {{vector?:number[], target?:number, graph?:Object, startNode?:string}} payload
+ * @returns {Array} Array de pași pentru vizualizare
+ */
 export function buildSteps(algorithmId, payload) {
   if (algorithmId === "bubbleSort")    return bubbleSortSteps(payload.vector || []);
   if (algorithmId === "selectionSort") return selectionSortSteps(payload.vector || []);
