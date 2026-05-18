@@ -196,9 +196,9 @@
       <div v-if="showAbout" class="about-card">
         <p class="about-info">{{ currentAlgo.info }}</p>
         <table class="about-table">
-          <tr><td>Caz cel mai bun</td><td>{{ currentAlgo.complexity?.best }}</td></tr>
-          <tr><td>Caz mediu</td><td>{{ currentAlgo.complexity?.avg }}</td></tr>
-          <tr><td>Caz cel mai rău</td><td>{{ currentAlgo.complexity?.worst }}</td></tr>
+          <tr><td>Cazul cel mai bun</td><td>{{ currentAlgo.complexity?.best }}</td></tr>
+          <tr><td>Cazul mediu</td><td>{{ currentAlgo.complexity?.avg }}</td></tr>
+          <tr><td>Cazul cel mai rău</td><td>{{ currentAlgo.complexity?.worst }}</td></tr>
           <tr><td>Memorie</td><td>{{ currentAlgo.complexity?.space }}</td></tr>
           <tr v-if="currentAlgo.stable !== null">
             <td>Stabil</td>
@@ -347,7 +347,7 @@
         </div>
         <div class="stat-card">
           <span class="stat-val">{{ stats.quiz.bestStreak > 0 ? stats.quiz.bestStreak : '—' }}</span>
-          <span class="stat-lbl">Cel mai lung streak</span>
+          <span class="stat-lbl">Serie maximă</span>
         </div>
         <div class="stat-card">
           <span class="stat-val">{{ stats.sim.runs > 0 ? stats.sim.runs : '—' }}</span>
@@ -356,7 +356,7 @@
       </div>
 
       <template v-if="stats.quiz.total > 0">
-        <h3 class="stats-section-title">Progres sesiune</h3>
+        <h3 class="stats-section-title">Progresul sesiunii</h3>
         <div class="answer-strip">
           <div
             v-for="a in [...stats.quiz.recent].reverse()"

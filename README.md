@@ -7,10 +7,12 @@
 ## Cuprins
 1. [Descriere](#descriere)
 2. [Funcționalități](#funcționalități)
-3. [Instalare și rulare](#instalare-și-rulare)
-4. [Arhitectura aplicației](#arhitectura-aplicației)
-5. [Tehnologii și justificare](#tehnologii-și-justificare)
-6. [Structura proiectului](#structura-proiectului)
+3. [Cum se folosește](#cum-se-folosește)
+4. [Instalare și rulare](#instalare-și-rulare)
+5. [Arhitectura aplicației](#arhitectura-aplicației)
+6. [Tehnologii și justificare](#tehnologii-și-justificare)
+7. [Structura proiectului](#structura-proiectului)
+8. [Internaționalizare](#internaționalizare)
 
 ---
 
@@ -59,6 +61,36 @@ Aplicația acoperă algoritmi din programa BAC România pentru clasele 9–12, o
 - Adaugă **seturi de exerciții** pentru Simulator (titlu, algoritm, vector/nod start)
 - Toate datele salvate în localStorage, persistente între sesiuni
 - Întrebările personalizate apar aleator în quiz (40% probabilitate dacă există)
+
+---
+
+## Cum se folosește
+
+### Tab Simulator
+1. **Alege clasa** (9–12) cu butoanele de filtru — lista de algoritmi se actualizează automat
+2. **Alege algoritmul** din dropdown
+3. **Introdu datele** — vector de numere (ex: `8, 2, 6, 1, 4`) sau nod start pentru grafuri
+4. Click **"Generează pașii"**
+5. Navighează cu **← Pas anterior** / **Pas următor →** sau pornește animația cu **▶ Play**
+6. Urmărește vizualizarea (bare colorate / boxuri / graf SVG), pseudocodul și codul C++ — linia activă se evidențiază sincron
+7. Click pe **"Despre algoritm ▼"** pentru complexitate și cazuri de utilizare
+
+### Tab Quiz
+1. Citește întrebarea — poate fi vizuală (identifică algoritmul) sau text (complexitate, proprietăți)
+2. Click pe una dintre opțiunile de răspuns
+3. Vei vedea imediat dacă ai răspuns corect și o explicație
+4. Click **"Întrebare nouă →"** pentru a continua
+5. Urmărește scorul și seria (🔥) în colțul din dreapta sus
+
+### Tab Statistici
+- Vizualizează progresul sesiunii prin strip-ul colorat (verde = corect, roșu = greșit)
+- Consultă secțiunea **"De reținut"** pentru a revedie întrebările la care ai greșit
+- Click **"Resetează"** pentru a șterge statisticile și a lua de la capăt
+
+### Tab Conținut
+1. **Adaugă întrebări Quiz** — completează textul întrebării, 2–4 opțiuni și selectează răspunsul corect
+2. **Adaugă seturi Simulator** — salvează un vector specific cu un titlu descriptiv
+3. Seturile salvate apar în lista de jos și pot fi încărcate oricând în Simulator
 
 ---
 
@@ -184,3 +216,14 @@ Componenta unică a aplicației. Organizată în secțiuni clare:
 - Bar chart + binary search: stilizare dinamică per pas
 - Quiz: generare întrebări, evaluare, persistare, flacără streak
 - Conținut: CRUD întrebări personalizate și seturi de exerciții
+
+---
+
+## Internaționalizare
+
+Aplicația este în prezent disponibilă în **limba română**, potrivit publicului țintă (elevi de liceu din România).
+
+Arhitectura permite adăugarea altor limbi fără modificări structurale majore:
+- Tot textul vizibil utilizatorului se află centralizat în `ALGORITHMS` (pseudocod, descrieri, complexitate) și în template-ul `App.vue`
+- Adăugarea unui sistem i18n (ex: **Vue I18n**) ar necesita doar înlocuirea textelor statice cu chei de traducere și adăugarea unui fișier de traduceri per limbă
+- Datele din `localStorage` sunt independente de limbă
