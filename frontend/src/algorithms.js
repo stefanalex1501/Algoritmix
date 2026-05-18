@@ -1,0 +1,327 @@
+export const ALGORITHMS = {
+  bubbleSort: {
+    id: "bubbleSort",
+    name: "Bubble Sort",
+    category: "Sortare",
+    grade: 9,
+    complexity: { best: "O(n)", avg: "O(n²)", worst: "O(n²)", space: "O(1)" },
+    stable: true,
+    info: "Compară și interschimbă perechi de elemente adiacente, repetând până când nu mai există nicio interschimbare necesară.",
+    when: "Vectori mici sau aproape sortați. Simplu de implementat și de demonstrat didactic.",
+    pseudocode: [
+      "pentru i = 0 → n-2:",
+      "  pentru j = 0 → n-i-2:",
+      "    dacă v[j] > v[j+1]:",
+      "      interschimbă v[j] și v[j+1]"
+    ]
+  },
+  selectionSort: {
+    id: "selectionSort",
+    name: "Selection Sort",
+    category: "Sortare",
+    grade: 9,
+    complexity: { best: "O(n²)", avg: "O(n²)", worst: "O(n²)", space: "O(1)" },
+    stable: false,
+    info: "La fiecare pas găsește minimul din subvectorul nesortat și îl plasează pe poziția corectă printr-o singură interschimbare.",
+    when: "Când numărul de scrieri (swap) trebuie minimizat. Nu este eficient pentru date mari.",
+    pseudocode: [
+      "pentru i = 0 → n-2:",
+      "  min_idx = i",
+      "  pentru j = i+1 → n-1:",
+      "    dacă v[j] < v[min_idx]: min_idx = j",
+      "  interschimbă v[i] și v[min_idx]"
+    ]
+  },
+  quickSort: {
+    id: "quickSort",
+    name: "Quick Sort",
+    category: "Sortare",
+    grade: 11,
+    complexity: { best: "O(n log n)", avg: "O(n log n)", worst: "O(n²)", space: "O(log n)" },
+    stable: false,
+    info: "Alege un element pivot, partiționează vectorul față de acesta, apoi sortează recursiv cele două subvectoare rezultate.",
+    when: "Cel mai rapid în practică pentru date mari. Cazul cel mai rău apare pe vectori sortați cu pivot = ultimul element.",
+    pseudocode: [
+      "alege pivot = v[dreapta]",
+      "pentru j = stânga → dreapta-1:",
+      "  dacă v[j] ≤ pivot → mută la stânga",
+      "plasează pivot pe poziția finală",
+      "apelează recursiv pe subvectori"
+    ]
+  },
+  binarySearch: {
+    id: "binarySearch",
+    name: "Căutare Binară",
+    category: "Căutare",
+    grade: 10,
+    complexity: { best: "O(1)", avg: "O(log n)", worst: "O(log n)", space: "O(1)" },
+    stable: null,
+    info: "Caută un element dintr-un vector sortat, împărțind repetat intervalul de căutare la jumătate.",
+    when: "Orice vector sortat. Mult mai eficient decât căutarea liniară. Necesită sortare prealabilă.",
+    pseudocode: [
+      "stânga = 0, dreapta = n-1",
+      "cât timp stânga ≤ dreapta:",
+      "  mijloc = (stânga + dreapta) / 2",
+      "  dacă v[mijloc] == țintă: găsit!",
+      "  dacă v[mijloc] < țintă: stânga = mijloc+1",
+      "  altfel: dreapta = mijloc-1"
+    ]
+  },
+  bfs: {
+    id: "bfs",
+    name: "BFS (Parcurgere Graf)",
+    category: "Grafuri",
+    grade: 12,
+    complexity: { best: "O(V+E)", avg: "O(V+E)", worst: "O(V+E)", space: "O(V)" },
+    stable: null,
+    info: "Parcurge graful nivel cu nivel, vizitând toate nodurile la distanța k înainte de cele la distanța k+1, folosind o coadă FIFO.",
+    when: "Cel mai scurt drum în grafuri neponderate, verificarea conexivității, parcurgere nivel cu nivel.",
+    pseudocode: [
+      "coadă ← { nod_start }",
+      "marchează nod_start ca vizitat",
+      "cât timp coada ≠ ∅:",
+      "  nod ← extrage din coadă",
+      "  pentru fiecare vecin nevizitat:",
+      "    adaugă în coadă și marchează"
+    ]
+  },
+  dfs: {
+    id: "dfs",
+    name: "DFS (Parcurgere Graf)",
+    category: "Grafuri",
+    grade: 12,
+    complexity: { best: "O(V+E)", avg: "O(V+E)", worst: "O(V+E)", space: "O(V)" },
+    stable: null,
+    info: "Parcurge graful în adâncime, explorând complet fiecare ramură înainte de a reveni și explora o altă direcție, folosind o stivă.",
+    when: "Detectarea ciclurilor, componente conexe, sortare topologică, rezolvarea labirinturilor.",
+    pseudocode: [
+      "stivă ← { nod_start }",
+      "marchează nod_start ca vizitat",
+      "cât timp stiva ≠ ∅:",
+      "  nod ← extrage din vârful stivei",
+      "  pentru fiecare vecin nevizitat:",
+      "    adaugă în stivă și marchează"
+    ]
+  }
+};
+
+export function parseVector(input) {
+  return input
+    .split(/[\s,]+/)
+    .map((x) => Number(x.trim()))
+    .filter((x) => Number.isFinite(x));
+}
+
+function clone(arr) {
+  return JSON.parse(JSON.stringify(arr));
+}
+
+export function bubbleSortSteps(vector) {
+  const a = [...vector];
+  const steps = [{ array: [...a], message: "Vector inițial", pseudoLine: -1 }];
+
+  for (let i = 0; i < a.length - 1; i++) {
+    for (let j = 0; j < a.length - i - 1; j++) {
+      steps.push({ array: [...a], active: [j, j + 1], message: `Comparăm ${a[j]} și ${a[j + 1]}`, pseudoLine: 2 });
+      if (a[j] > a[j + 1]) {
+        [a[j], a[j + 1]] = [a[j + 1], a[j]];
+        steps.push({ array: [...a], active: [j, j + 1], swapped: true, message: "Am făcut interschimbarea", pseudoLine: 3 });
+      }
+    }
+  }
+
+  steps.push({ array: [...a], message: "Sortare finalizată", pseudoLine: -1 });
+  return steps;
+}
+
+export function selectionSortSteps(vector) {
+  const a = [...vector];
+  const steps = [{ array: [...a], message: "Vector inițial", pseudoLine: -1 }];
+
+  for (let i = 0; i < a.length - 1; i++) {
+    let minIdx = i;
+    steps.push({ array: [...a], minIdx, sortedUpTo: i, active: [i], message: `Pasul ${i + 1}: căutăm minimul începând de la poziția ${i}`, pseudoLine: 0 });
+    steps.push({ array: [...a], minIdx, sortedUpTo: i, active: [i], message: `min_idx = ${i}`, pseudoLine: 1 });
+
+    for (let j = i + 1; j < a.length; j++) {
+      steps.push({ array: [...a], minIdx, sortedUpTo: i, active: [j, minIdx], message: `Comparăm ${a[j]} cu minimul curent ${a[minIdx]}`, pseudoLine: 2 });
+      if (a[j] < a[minIdx]) {
+        minIdx = j;
+        steps.push({ array: [...a], minIdx, sortedUpTo: i, active: [j], message: `Nou minim: ${a[minIdx]} la poziția ${minIdx}`, pseudoLine: 3 });
+      }
+    }
+
+    if (minIdx !== i) {
+      [a[i], a[minIdx]] = [a[minIdx], a[i]];
+    }
+    steps.push({ array: [...a], minIdx: i, sortedUpTo: i + 1, active: [i], message: `Plasăm minimul ${a[i]} pe poziția ${i}`, pseudoLine: 4 });
+  }
+
+  steps.push({ array: [...a], sortedUpTo: a.length, message: "Sortare finalizată", pseudoLine: -1 });
+  return steps;
+}
+
+export function quickSortSteps(vector) {
+  const a = [...vector];
+  const steps = [{ array: [...a], message: "Vector inițial", pseudoLine: -1 }];
+
+  function partition(low, high) {
+    const pivot = a[high];
+    let i = low - 1;
+    steps.push({ array: [...a], range: [low, high], pivot: high, message: `Pivot = ${pivot}`, pseudoLine: 0 });
+
+    for (let j = low; j < high; j++) {
+      steps.push({ array: [...a], active: [j, high], range: [low, high], pivot: high, message: `Comparăm ${a[j]} cu pivot ${pivot}`, pseudoLine: 1 });
+      if (a[j] <= pivot) {
+        i++;
+        [a[i], a[j]] = [a[j], a[i]];
+        steps.push({ array: [...a], active: [i, j], pivot: high, message: "Mutăm elementul în partea stângă", pseudoLine: 2 });
+      }
+    }
+
+    [a[i + 1], a[high]] = [a[high], a[i + 1]];
+    steps.push({ array: [...a], active: [i + 1, high], pivot: i + 1, message: "Plasăm pivotul pe poziția finală", pseudoLine: 3 });
+    return i + 1;
+  }
+
+  function sort(low, high) {
+    if (low < high) {
+      const pi = partition(low, high);
+      sort(low, pi - 1);
+      sort(pi + 1, high);
+    }
+  }
+
+  sort(0, a.length - 1);
+  steps.push({ array: [...a], message: "Sortare finalizată", pseudoLine: -1 });
+  return steps;
+}
+
+export function binarySearchSteps(vector, target) {
+  const a = [...vector].sort((x, y) => x - y);
+  const steps = [{ array: [...a], left: 0, right: a.length - 1, mid: null, found: false, target, message: `Căutăm ${target} în vectorul sortat`, pseudoLine: 0 }];
+
+  let left = 0, right = a.length - 1;
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    steps.push({ array: [...a], left, right, mid, found: false, target, message: `Interval [${left}, ${right}], mijloc = ${mid}, v[${mid}] = ${a[mid]}`, pseudoLine: 2 });
+
+    if (a[mid] === target) {
+      steps.push({ array: [...a], left, right, mid, found: true, target, message: `Găsit! ${target} este la poziția ${mid}`, pseudoLine: 3 });
+      break;
+    } else if (a[mid] < target) {
+      steps.push({ array: [...a], left, right, mid, found: false, target, message: `${a[mid]} < ${target} → căutăm în dreapta`, pseudoLine: 4 });
+      left = mid + 1;
+    } else {
+      steps.push({ array: [...a], left, right, mid, found: false, target, message: `${a[mid]} > ${target} → căutăm în stânga`, pseudoLine: 5 });
+      right = mid - 1;
+    }
+  }
+
+  if (left > right) {
+    steps.push({ array: [...a], left, right, mid: null, found: false, target, message: `${target} nu există în vector`, pseudoLine: -1 });
+  }
+
+  return steps;
+}
+
+export function bfsSteps(graph, start) {
+  const visited = new Set();
+  const queue = [start];
+  const order = [];
+  const steps = [{ graph: clone(graph), queue: [...queue], order: [], current: null, message: `Pornim din nodul ${start}`, pseudoLine: 0 }];
+
+  visited.add(start);
+
+  while (queue.length > 0) {
+    const node = queue.shift();
+    order.push(node);
+    steps.push({ graph: clone(graph), queue: [...queue], order: [...order], current: node, message: `Vizităm nodul ${node}`, pseudoLine: 3 });
+
+    const neighbors = graph[node] || [];
+    for (const nb of neighbors) {
+      if (!visited.has(nb)) {
+        visited.add(nb);
+        queue.push(nb);
+        steps.push({ graph: clone(graph), queue: [...queue], order: [...order], current: node, next: nb, message: `Adăugăm vecinul ${nb} în coadă`, pseudoLine: 5 });
+      }
+    }
+  }
+
+  steps.push({ graph: clone(graph), queue: [], order: [...order], current: null, message: "Parcurgere BFS finalizată", pseudoLine: -1 });
+  return steps;
+}
+
+export function dfsSteps(graph, start) {
+  const visited = new Set();
+  const stack = [start];
+  const order = [];
+  const steps = [{ graph: clone(graph), stack: [...stack], order: [], current: null, next: null, message: `Pornim DFS din nodul ${start}`, pseudoLine: 0 }];
+
+  while (stack.length > 0) {
+    const node = stack.pop();
+    if (visited.has(node)) continue;
+
+    visited.add(node);
+    order.push(node);
+    steps.push({ graph: clone(graph), stack: [...stack], order: [...order], current: node, next: null, message: `Vizităm nodul ${node}`, pseudoLine: 3 });
+
+    const neighbors = (graph[node] || []).slice().reverse();
+    for (const nb of neighbors) {
+      if (!visited.has(nb)) {
+        stack.push(nb);
+        steps.push({ graph: clone(graph), stack: [...stack], order: [...order], current: node, next: nb, message: `Adăugăm vecinul ${nb} în stivă`, pseudoLine: 5 });
+      }
+    }
+  }
+
+  steps.push({ graph: clone(graph), stack: [], order: [...order], current: null, next: null, message: "Parcurgere DFS finalizată", pseudoLine: -1 });
+  return steps;
+}
+
+export function buildSteps(algorithmId, payload) {
+  if (algorithmId === "bubbleSort")    return bubbleSortSteps(payload.vector || []);
+  if (algorithmId === "selectionSort") return selectionSortSteps(payload.vector || []);
+  if (algorithmId === "quickSort")     return quickSortSteps(payload.vector || []);
+  if (algorithmId === "binarySearch")  return binarySearchSteps(payload.vector || [], payload.target ?? 0);
+  if (algorithmId === "bfs")           return bfsSteps(payload.graph, payload.startNode);
+  if (algorithmId === "dfs")           return dfsSteps(payload.graph, payload.startNode);
+  return [];
+}
+
+export const DEFAULT_GRAPH = {
+  A: ["B", "C"],
+  B: ["D", "E"],
+  C: ["F"],
+  D: [],
+  E: ["F"],
+  F: []
+};
+
+export const GRAPH_PRESETS = [
+  {
+    id: "general",
+    name: "Graf general (6 noduri)",
+    graph: { A:["B","C"], B:["D","E"], C:["F"], D:[], E:["F"], F:[] },
+    startNode: "A"
+  },
+  {
+    id: "lant",
+    name: "Lanț (5 noduri)",
+    graph: { A:["B"], B:["A","C"], C:["B","D"], D:["C","E"], E:["D"] },
+    startNode: "A"
+  },
+  {
+    id: "arbore",
+    name: "Arbore binar (7 noduri)",
+    graph: { A:["B","C"], B:["D","E"], C:["F","G"], D:[], E:[], F:[], G:[] },
+    startNode: "A"
+  },
+  {
+    id: "ciclic",
+    name: "Graf ciclic (5 noduri)",
+    graph: { A:["B","E"], B:["A","C"], C:["B","D"], D:["C","E"], E:["D","A"] },
+    startNode: "A"
+  }
+];

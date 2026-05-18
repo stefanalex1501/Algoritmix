@@ -1,0 +1,17 @@
+{
+  "name": "edunova-backend",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node src/server.js",
+    "start": "node src/server.js",
+    "cpp:build": "g++ -std=c++17 -O2 -static -static-libgcc -static-libstdc++ -o cpp/algoritmix_engine.exe cpp/algoritmix_engine.cpp",
+    "cpp:build:msvc": "cl /EHsc /std:c++17 /Fe:cpp\\\\algoritmix_engine.exe cpp\\\\algoritmix_engine.cpp"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
