@@ -9,8 +9,8 @@ export const ALGORITHMS = {
     info: "Compară și interschimbă perechi de elemente adiacente, repetând până când nu mai există nicio interschimbare necesară.",
     when: "Vectori mici sau aproape sortați. Simplu de implementat și de demonstrat didactic.",
     pseudocode: [
-      "pentru i = 0 → n-2:",
-      "  pentru j = 0 → n-i-2:",
+      "pentru i = 1 → n-1:",
+      "  pentru j = 1 → n-i:",
       "    dacă v[j] > v[j+1]:",
       "      interschimbă v[j] și v[j+1]"
     ]
@@ -25,9 +25,9 @@ export const ALGORITHMS = {
     info: "La fiecare pas găsește minimul din subvectorul nesortat și îl plasează pe poziția corectă printr-o singură interschimbare.",
     when: "Când numărul de scrieri (swap) trebuie minimizat. Nu este eficient pentru date mari.",
     pseudocode: [
-      "pentru i = 0 → n-2:",
+      "pentru i = 1 → n-1:",
       "  min_idx = i",
-      "  pentru j = i+1 → n-1:",
+      "  pentru j = i+1 → n:",
       "    dacă v[j] < v[min_idx]: min_idx = j",
       "  interschimbă v[i] și v[min_idx]"
     ]
@@ -59,7 +59,7 @@ export const ALGORITHMS = {
     info: "Caută un element dintr-un vector sortat, împărțind repetat intervalul de căutare la jumătate.",
     when: "Orice vector sortat. Mult mai eficient decât căutarea liniară. Necesită sortare prealabilă.",
     pseudocode: [
-      "stânga = 0, dreapta = n-1",
+      "stânga = 1, dreapta = n",
       "cât timp stânga ≤ dreapta:",
       "  mijloc = (stânga + dreapta) / 2",
       "  dacă v[mijloc] == țintă: găsit!",
@@ -160,21 +160,21 @@ export function selectionSortSteps(vector) {
 
   for (let i = 0; i < a.length - 1; i++) {
     let minIdx = i;
-    steps.push({ array: [...a], minIdx, sortedUpTo: i, active: [i], message: `Pasul ${i + 1}: căutăm minimul începând de la poziția ${i}`, pseudoLine: 0 });
-    steps.push({ array: [...a], minIdx, sortedUpTo: i, active: [i], message: `min_idx = ${i}`, pseudoLine: 1 });
+    steps.push({ array: [...a], minIdx, sortedUpTo: i, active: [i], message: `Pasul ${i + 1}: căutăm minimul începând de la poziția ${i + 1}`, pseudoLine: 0 });
+    steps.push({ array: [...a], minIdx, sortedUpTo: i, active: [i], message: `min_idx = ${i + 1}`, pseudoLine: 1 });
 
     for (let j = i + 1; j < a.length; j++) {
       steps.push({ array: [...a], minIdx, sortedUpTo: i, active: [j, minIdx], message: `Comparăm ${a[j]} cu minimul curent ${a[minIdx]}`, pseudoLine: 2 });
       if (a[j] < a[minIdx]) {
         minIdx = j;
-        steps.push({ array: [...a], minIdx, sortedUpTo: i, active: [j], message: `Nou minim: ${a[minIdx]} la poziția ${minIdx}`, pseudoLine: 3 });
+        steps.push({ array: [...a], minIdx, sortedUpTo: i, active: [j], message: `Nou minim: ${a[minIdx]} la poziția ${minIdx + 1}`, pseudoLine: 3 });
       }
     }
 
     if (minIdx !== i) {
       [a[i], a[minIdx]] = [a[minIdx], a[i]];
     }
-    steps.push({ array: [...a], minIdx: i, sortedUpTo: i + 1, active: [i], message: `Plasăm minimul ${a[i]} pe poziția ${i}`, pseudoLine: 4 });
+    steps.push({ array: [...a], minIdx: i, sortedUpTo: i + 1, active: [i], message: `Plasăm minimul ${a[i]} pe poziția ${i + 1}`, pseudoLine: 4 });
   }
 
   steps.push({ array: [...a], sortedUpTo: a.length, message: "Sortare finalizată", pseudoLine: -1 });
@@ -238,10 +238,10 @@ export function binarySearchSteps(vector, target) {
 
   while (left <= right) {
     const mid = Math.floor((left + right) / 2);
-    steps.push({ array: [...a], left, right, mid, found: false, target, message: `Interval [${left}, ${right}], mijloc = ${mid}, v[${mid}] = ${a[mid]}`, pseudoLine: 2 });
+    steps.push({ array: [...a], left, right, mid, found: false, target, message: `Interval [${left + 1}, ${right + 1}], mijloc = ${mid + 1}, v[${mid + 1}] = ${a[mid]}`, pseudoLine: 2 });
 
     if (a[mid] === target) {
-      steps.push({ array: [...a], left, right, mid, found: true, target, message: `Găsit! ${target} este la poziția ${mid}`, pseudoLine: 3 });
+      steps.push({ array: [...a], left, right, mid, found: true, target, message: `Găsit! ${target} este la poziția ${mid + 1}`, pseudoLine: 3 });
       break;
     } else if (a[mid] < target) {
       steps.push({ array: [...a], left, right, mid, found: false, target, message: `${a[mid]} < ${target} → căutăm în dreapta`, pseudoLine: 4 });

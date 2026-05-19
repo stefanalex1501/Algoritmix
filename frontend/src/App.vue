@@ -103,7 +103,7 @@
         <div v-if="sim.algorithm === 'binarySearch'" class="bsearch-viz">
           <div class="bsearch-target">
             Căutăm: <strong>{{ currentStep.target }}</strong>
-            <span v-if="currentStep.found" class="bsearch-found-badge">✓ Găsit la poziția {{ currentStep.mid }}!</span>
+            <span v-if="currentStep.found" class="bsearch-found-badge">✓ Găsit la poziția {{ currentStep.mid + 1 }}!</span>
           </div>
           <div class="bsearch-array">
             <div v-for="(val, i) in currentStep.array" :key="i" class="bsearch-cell">
@@ -113,7 +113,7 @@
                 <span v-if="i === currentStep.mid"   class="mk-mij">mij</span>
                 <span v-if="i === currentStep.right" class="mk-dr">dr</span>
               </div>
-              <div class="bsearch-idx">{{ i }}</div>
+              <div class="bsearch-idx">{{ i + 1 }}</div>
             </div>
           </div>
           <div class="bar-legend" style="margin-top:10px">
@@ -129,7 +129,7 @@
             <div v-for="(val, i) in currentStep.array" :key="i" class="bar-wrap">
               <span class="bar-val">{{ val }}</span>
               <div class="bar" :style="barStyle(val, i)" :class="{ 'bar-changed': changedIndices.has(i) }"></div>
-              <span class="bar-idx">{{ i }}</span>
+              <span class="bar-idx">{{ i + 1 }}</span>
             </div>
           </div>
           <div v-if="sim.algorithm === 'selectionSort'" class="bar-legend">
@@ -255,13 +255,37 @@
       <p class="quiz-prompt">{{ quiz.prompt }}</p>
 
       <div v-if="quiz.type === 'visual' && quiz.step" class="quiz-viz-area">
+        <!-- Căutare Binară -->
+        <div v-if="quiz.vizAlgo === 'binarySearch'" class="bsearch-viz">
+          <div class="bsearch-target">
+            Căutăm: <strong>{{ quiz.step.target }}</strong>
+            <span v-if="quiz.step.found" class="bsearch-found-badge">✓ Găsit la poziția {{ quiz.step.mid + 1 }}!</span>
+          </div>
+          <div class="bsearch-array">
+            <div v-for="(val, i) in quiz.step.array" :key="i" class="bsearch-cell">
+              <div class="bsearch-box" :class="quizBsearchBoxClass(i)">{{ val }}</div>
+              <div class="bsearch-markers">
+                <span v-if="i === quiz.step.left"  class="mk-st">st</span>
+                <span v-if="i === quiz.step.mid"   class="mk-mij">mij</span>
+                <span v-if="i === quiz.step.right" class="mk-dr">dr</span>
+              </div>
+              <div class="bsearch-idx">{{ i + 1 }}</div>
+            </div>
+          </div>
+          <div class="bar-legend" style="margin-top:10px">
+            <span class="legend-item"><span class="legend-dot" style="background:#f0c040"></span>Mijloc</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#4ade80"></span>Găsit</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#0d1a26; border:1px solid #1e3248"></span>Exclus</span>
+          </div>
+        </div>
+
         <!-- Sorting bar chart -->
-        <div v-if="quiz.vizAlgo !== 'bfs'" class="bars-container">
+        <div v-else-if="quiz.vizAlgo !== 'bfs'" class="bars-container">
           <div class="bars">
             <div v-for="(val, i) in quiz.step.array" :key="i" class="bar-wrap">
               <span class="bar-val">{{ val }}</span>
               <div class="bar" :style="quizBarStyle(val, i)"></div>
-              <span class="bar-idx">{{ i }}</span>
+              <span class="bar-idx">{{ i + 1 }}</span>
             </div>
           </div>
           <div class="bar-legend">
@@ -749,6 +773,15 @@ watch(index, (newIdx, oldIdx) => {
 // ── Binary search box helper ───────────────────────────
 function bsearchBoxClass(i) {
   const s = currentStep.value;
+  if (!s.array) return "box-in";
+  if (s.found && i === s.mid)  return "box-found";
+  if (i === s.mid)             return "box-mid";
+  if (s.left !== undefined && s.right !== undefined && (i < s.left || i > s.right)) return "box-out";
+  return "box-in";
+}
+
+function quizBsearchBoxClass(i) {
+  const s = quiz.step || {};
   if (!s.array) return "box-in";
   if (s.found && i === s.mid)  return "box-found";
   if (i === s.mid)             return "box-mid";
