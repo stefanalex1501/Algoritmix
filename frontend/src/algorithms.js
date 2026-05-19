@@ -32,6 +32,23 @@ export const ALGORITHMS = {
       "  interschimbă v[i] și v[min_idx]"
     ]
   },
+  mergeSort: {
+    id: "mergeSort",
+    name: "Merge Sort",
+    category: "Sortare",
+    grade: 11,
+    complexity: { best: "O(n log n)", avg: "O(n log n)", worst: "O(n log n)", space: "O(n)" },
+    stable: true,
+    info: "Împarte recursiv vectorul în două jumătăți, le sortează independent, apoi le interclasează. Garantează O(n log n) indiferent de date.",
+    when: "Când complexitatea garantată O(n log n) este critică. Preferabil față de Quick Sort pe date aproape sortate sau când stabilitatea contează.",
+    pseudocode: [
+      "dacă stânga < dreapta:",
+      "  mijloc = (stânga + dreapta) / 2",
+      "  mergesort(stânga, mijloc)",
+      "  mergesort(mijloc+1, dreapta)",
+      "  interclasează(stânga, mijloc, dreapta)"
+    ]
+  },
   quickSort: {
     id: "quickSort",
     name: "Quick Sort",
@@ -47,6 +64,40 @@ export const ALGORITHMS = {
       "  dacă v[j] ≤ pivot → mută la stânga",
       "plasează pivot pe poziția finală",
       "apelează recursiv pe subvectori"
+    ]
+  },
+  linearSearch: {
+    id: "linearSearch",
+    name: "Căutare Liniară",
+    category: "Căutare",
+    grade: 9,
+    complexity: { best: "O(1)", avg: "O(n)", worst: "O(n)", space: "O(1)" },
+    stable: null,
+    info: "Parcurge vectorul element cu element de la stânga la dreapta, comparând fiecare valoare cu ținta căutată.",
+    when: "Vectori nesortați sau mici. Simplu de implementat, dar ineficient pentru date mari.",
+    pseudocode: [
+      "pentru i = 1 → n:",
+      "  dacă v[i] == țintă:",
+      "    returnează i (găsit)",
+      "returnează -1 (negăsit)"
+    ]
+  },
+  insertionSort: {
+    id: "insertionSort",
+    name: "Insertion Sort",
+    category: "Sortare",
+    grade: 9,
+    complexity: { best: "O(n)", avg: "O(n²)", worst: "O(n²)", space: "O(1)" },
+    stable: true,
+    info: "La fiecare pas, ia elementul curent (cheia) și îl inserează în poziția corectă în subvectorul deja sortat din stânga.",
+    when: "Vectori mici sau aproape sortați. Optim pentru date care sosesc pe rând (online). Stabil.",
+    pseudocode: [
+      "pentru i = 2 → n:",
+      "  cheie = v[i]",
+      "  j = i - 1",
+      "  cât timp j ≥ 1 și v[j] > cheie:",
+      "    v[j+1] = v[j]; j = j - 1",
+      "  v[j+1] = cheie"
     ]
   },
   binarySearch: {
@@ -224,6 +275,120 @@ export function quickSortSteps(vector) {
 }
 
 /**
+ * Generează pașii de vizualizare pentru Insertion Sort.
+ * Urmărește cheia curentă (keyIdx) și subvectorul sortat (sortedUpTo).
+ * @param {number[]} vector - Vectorul de sortat
+ * @returns {Array<{array:number[], active?:number[], keyIdx?:number, sortedUpTo?:number, message:string, pseudoLine:number}>}
+ */
+export function insertionSortSteps(vector) {
+  const a = [...vector];
+  const steps = [{ array: [...a], message: "Vector inițial", pseudoLine: -1 }];
+
+  for (let i = 1; i < a.length; i++) {
+    const key = a[i];
+    steps.push({ array: [...a], keyIdx: i, sortedUpTo: i, active: [i],
+      message: `Pasul ${i}: cheie = ${key}, de inserat în subvectorul sortat`, pseudoLine: 1 });
+
+    let j = i - 1;
+    while (j >= 0 && a[j] > key) {
+      steps.push({ array: [...a], keyIdx: i, sortedUpTo: i, active: [j, j + 1],
+        message: `${a[j]} > ${key} → deplasăm ${a[j]} cu o poziție la dreapta`, pseudoLine: 4 });
+      a[j + 1] = a[j];
+      j--;
+      steps.push({ array: [...a], keyIdx: j + 1, sortedUpTo: i, active: [j + 1],
+        message: `Loc eliberat la poziția ${j + 2}`, pseudoLine: 4 });
+    }
+
+    a[j + 1] = key;
+    steps.push({ array: [...a], keyIdx: j + 1, sortedUpTo: i + 1, active: [j + 1],
+      message: `Inserăm ${key} pe poziția ${j + 2}`, pseudoLine: 5 });
+  }
+
+  steps.push({ array: [...a], sortedUpTo: a.length, message: "Sortare finalizată", pseudoLine: -1 });
+  return steps;
+}
+
+/**
+ * Generează pașii de vizualizare pentru Căutarea Liniară.
+ * @param {number[]} vector - Vectorul în care se caută
+ * @param {number} target - Valoarea căutată
+ * @returns {Array<{array:number[], active:number[], found:boolean, target:number, message:string, pseudoLine:number}>}
+ */
+export function linearSearchSteps(vector, target) {
+  const a = [...vector];
+  const steps = [{ array: [...a], active: [], found: false, target,
+    message: `Căutăm ${target} în vector`, pseudoLine: 0 }];
+
+  for (let i = 0; i < a.length; i++) {
+    steps.push({ array: [...a], active: [i], found: false, target,
+      message: `Verificăm poziția ${i + 1}: v[${i + 1}] = ${a[i]}`, pseudoLine: 1 });
+
+    if (a[i] === target) {
+      steps.push({ array: [...a], active: [i], found: true, target,
+        message: `Găsit! ${target} este la poziția ${i + 1}`, pseudoLine: 2 });
+      return steps;
+    }
+  }
+
+  steps.push({ array: [...a], active: [], found: false, target,
+    message: `${target} nu există în vector`, pseudoLine: 3 });
+  return steps;
+}
+
+/**
+ * Generează pașii de vizualizare pentru Merge Sort (interclasare).
+ * Urmărește intervalul curent de interclasare (mergeRange) și elementele comparate (active).
+ * @param {number[]} vector - Vectorul de sortat
+ * @returns {Array<{array:number[], active?:number[], mergeRange?:number[]|null, message:string, pseudoLine:number}>}
+ */
+export function mergeSortSteps(vector) {
+  const a = [...vector];
+  const steps = [{ array: [...a], active: [], mergeRange: null, message: "Vector inițial", pseudoLine: -1 }];
+
+  function merge(left, mid, right) {
+    const L = a.slice(left, mid + 1);
+    const R = a.slice(mid + 1, right + 1);
+    steps.push({ array: [...a], active: [], mergeRange: [left, right],
+      message: `Interclasăm [${left + 1}..${mid + 1}] cu [${mid + 2}..${right + 1}]`, pseudoLine: 4 });
+
+    let i = 0, j = 0, k = left;
+    while (i < L.length && j < R.length) {
+      const li = left + i, ri = mid + 1 + j;
+      if (L[i] <= R[j]) {
+        steps.push({ array: [...a], active: [li, ri], mergeRange: [left, right],
+          message: `${L[i]} ≤ ${R[j]} → plasăm ${L[i]}`, pseudoLine: 4 });
+        a[k++] = L[i++];
+      } else {
+        steps.push({ array: [...a], active: [li, ri], mergeRange: [left, right],
+          message: `${L[i]} > ${R[j]} → plasăm ${R[j]}`, pseudoLine: 4 });
+        a[k++] = R[j++];
+      }
+      steps.push({ array: [...a], active: [k - 1], mergeRange: [left, right],
+        message: `Plasat pe poziția ${k}`, pseudoLine: 4 });
+    }
+    while (i < L.length) { a[k++] = L[i++]; }
+    while (j < R.length) { a[k++] = R[j++]; }
+    steps.push({ array: [...a], active: [], mergeRange: [left, right],
+      message: `Interval [${left + 1}..${right + 1}] interclasare finalizată`, pseudoLine: 4 });
+  }
+
+  function sort(left, right) {
+    if (left < right) {
+      const mid = Math.floor((left + right) / 2);
+      steps.push({ array: [...a], active: [], mergeRange: null,
+        message: `Împărțim [${left + 1}..${right + 1}] → mijloc = ${mid + 1}`, pseudoLine: 1 });
+      sort(left, mid);
+      sort(mid + 1, right);
+      merge(left, mid, right);
+    }
+  }
+
+  sort(0, a.length - 1);
+  steps.push({ array: [...a], active: [], mergeRange: null, message: "Sortare finalizată", pseudoLine: -1 });
+  return steps;
+}
+
+/**
  * Generează pașii de vizualizare pentru Căutarea Binară.
  * Vectorul este sortat automat înainte de căutare.
  * @param {number[]} vector - Vectorul în care se caută (va fi sortat)
@@ -337,7 +502,10 @@ export function dfsSteps(graph, start) {
 export function buildSteps(algorithmId, payload) {
   if (algorithmId === "bubbleSort")    return bubbleSortSteps(payload.vector || []);
   if (algorithmId === "selectionSort") return selectionSortSteps(payload.vector || []);
+  if (algorithmId === "insertionSort") return insertionSortSteps(payload.vector || []);
+  if (algorithmId === "mergeSort")     return mergeSortSteps(payload.vector || []);
   if (algorithmId === "quickSort")     return quickSortSteps(payload.vector || []);
+  if (algorithmId === "linearSearch")  return linearSearchSteps(payload.vector || [], payload.target ?? 0);
   if (algorithmId === "binarySearch")  return binarySearchSteps(payload.vector || [], payload.target ?? 0);
   if (algorithmId === "bfs")           return bfsSteps(payload.graph, payload.startNode);
   if (algorithmId === "dfs")           return dfsSteps(payload.graph, payload.startNode);

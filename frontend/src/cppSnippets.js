@@ -13,12 +13,33 @@ export const CPP_LINE_MAP = {
     3: [16, 17],    // if(a[j] < a[minIdx]) { minIdx = j; }
     4: [18]         // swap(a[i], a[minIdx])
   },
+  insertionSort: {
+    0: [12],        // for(i = 2; i <= n; i++)
+    1: [14],        // cheie = a[i]
+    2: [15],        // j = i - 1
+    3: [16],        // while(j >= 1 && a[j] > cheie)
+    4: [18, 19],    // a[j+1] = a[j]; j--
+    5: [21]         // a[j+1] = cheie
+  },
+  mergeSort: {
+    0: [26],        // if(st < dr)
+    1: [28],        // mij = (st + dr) / 2
+    2: [29],        // mergesort(st, mij)
+    3: [30],        // mergesort(mij+1, dr)
+    4: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]  // interclaseaza
+  },
   quickSort: {
     0: [8],         // int p = a[dr], k = st - 1
     1: [9],         // for(j = st; j < dr; j++)
     2: [11, 13, 14],// if(a[j] <= p) { k++; swap; }
     3: [17],        // swap(a[k + 1], a[dr])
     4: [26, 27]     // quicksort recursiv x2
+  },
+  linearSearch: {
+    0: [11],        // rezultat = -1
+    1: [12],        // for(i = 1; i <= n; i++)
+    2: [13, 14, 15, 16], // if(a[i] == tinta) { rezultat = i; break; }
+    3: [19, 20, 21] // if/else cout
   },
   binarySearch: {
     0: [12, 13],    // st = 1; dr = n
@@ -91,6 +112,78 @@ int main()
     return 0;
 }`,
 
+  insertionSort:
+`#include <iostream>
+
+using namespace std;
+
+int n, i, j, a[1001];
+
+int main()
+{
+    cin >> n;
+    for(i = 1; i <= n; i++)
+        cin >> a[i];
+
+    for(i = 2; i <= n; i++)
+    {
+        int cheie = a[i];
+        j = i - 1;
+        while(j >= 1 && a[j] > cheie)
+        {
+            a[j + 1] = a[j];
+            j--;
+        }
+        a[j + 1] = cheie;
+    }
+
+    for(i = 1; i <= n; i++)
+        cout << a[i] << " ";
+    return 0;
+}`,
+
+  mergeSort:
+`#include <iostream>
+
+using namespace std;
+
+int n, i, a[1001], b[1001];
+
+void interclaseaza(int st, int mij, int dr)
+{
+    int i = st, j = mij + 1, k = st;
+    while(i <= mij && j <= dr)
+    {
+        if(a[i] <= a[j]) b[k++] = a[i++];
+        else             b[k++] = a[j++];
+    }
+    while(i <= mij) b[k++] = a[i++];
+    while(j <= dr)  b[k++] = a[j++];
+    for(i = st; i <= dr; i++) a[i] = b[i];
+}
+
+void mergesort(int st, int dr)
+{
+    if(st < dr)
+    {
+        int mij = (st + dr) / 2;
+        mergesort(st, mij);
+        mergesort(mij + 1, dr);
+        interclaseaza(st, mij, dr);
+    }
+}
+
+int main()
+{
+    cin >> n;
+    for(i = 1; i <= n; i++)
+        cin >> a[i];
+    mergesort(1, n);
+    for(i = 1; i <= n; i++)
+        cout << a[i] << " ";
+    return 0;
+}`,
+
   quickSort:
 `#include <iostream>
 
@@ -131,6 +224,32 @@ int main()
     quicksort(1, n);
     for(i = 1; i <= n; i++)
         cout << a[i] << " ";
+    return 0;
+}`,
+
+  linearSearch:
+`#include <iostream>
+
+using namespace std;
+
+int n, tinta, i, a[1001], rezultat;
+
+int main()
+{
+    cin >> n >> tinta;
+    for(i = 1; i <= n; i++)
+        cin >> a[i];
+    rezultat = -1;
+    for(i = 1; i <= n; i++)
+        if(a[i] == tinta)
+        {
+            rezultat = i;
+            break;
+        }
+    if(rezultat != -1)
+        cout << "Gasit la pozitia " << rezultat;
+    else
+        cout << "Negasit";
     return 0;
 }`,
 
