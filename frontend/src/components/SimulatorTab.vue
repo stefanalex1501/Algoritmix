@@ -2,7 +2,7 @@
   <section class="card">
     <div class="sim-controls">
       <div class="grade-filter-row">
-        <span class="grade-filter-label">{{ t('filter_all') }}:</span>
+        <span class="grade-filter-label">{{ t('label_class') }}</span>
         <div class="grade-filter">
           <button :class="{ active: filterGrade === null }" @click="setFilter(null)">{{ t('filter_all') }}</button>
           <button :class="{ active: filterGrade === 9 }"    @click="setFilter(9)">{{ t('filter_grade', { g: 9 }) }}</button>
@@ -26,7 +26,7 @@
         <label>{{ sim.algorithm === 'binarySearch' ? t('label_vector_sorted') : t('label_vector') }}</label>
         <div class="input-with-btn">
           <input v-model="sim.vectorInput" :placeholder="sim.algorithm === 'binarySearch' ? 'ex: 1, 3, 5, 7, 9, 11, 14' : 'ex: 8, 2, 6, 1, 4'" />
-          <button class="btn-rand" @click="randomVector" :title="t('btn_random')">&#x21BA; {{ t('btn_random') }}</button>
+          <button class="btn-rand" @click="randomVector" :title="t('btn_random')">{{ t('btn_random') }}</button>
         </div>
       </div>
       <div v-if="sim.algorithm === 'binarySearch' || sim.algorithm === 'linearSearch'" class="row">
@@ -172,9 +172,9 @@
           <span class="legend-item"><span class="legend-dot" style="background:#1a2d40"></span>{{ t('legend_unvisited') }}</span>
         </div>
         <div class="bfs-info">
-          <p><strong>Ordine vizitare:</strong> {{ (currentStep.order || []).join(' → ') || '—' }}</p>
-          <p v-if="currentStep.queue?.length"><strong>Coadă:</strong> [ {{ currentStep.queue.join(', ') }} ]</p>
-          <p v-if="currentStep.stack?.length"><strong>Stivă:</strong> [ {{ currentStep.stack.join(', ') }} ]</p>
+          <p><strong>{{ t('bfs_visit_order') }}</strong> {{ (currentStep.order || []).join(' → ') || '—' }}</p>
+          <p v-if="currentStep.queue?.length"><strong>{{ t('bfs_queue') }}</strong> [ {{ currentStep.queue.join(', ') }} ]</p>
+          <p v-if="currentStep.stack?.length"><strong>{{ t('bfs_stack') }}</strong> [ {{ currentStep.stack.join(', ') }} ]</p>
         </div>
       </div>
     </div>

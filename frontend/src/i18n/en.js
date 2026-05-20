@@ -25,6 +25,12 @@ export default {
   // Simulator — grade filters
   filter_all:   "All",
   filter_grade: "Grade {g}",
+  label_class:  "Grade:",
+
+  // BFS info
+  bfs_visit_order: "Visit order:",
+  bfs_queue:       "Queue:",
+  bfs_stack:       "Stack:",
 
   // Simulator — visualization
   grade_badge:   "Grade {g}",
@@ -90,6 +96,11 @@ export default {
   stats_no_data:    "Use the Simulator and Quiz to see session statistics.",
   stats_no_mistakes:"No mistakes recorded — keep it up!",
 
+  // Stats
+  stats_progress:    "Session progress",
+  stats_recent_ans:  "Recent answers",
+  stats_correct_ans: "Correct answer:",
+
   // Admin / Content
   admin_title:       "Content panel",
   admin_desc:        "Add custom Quiz questions and exercise sets for the Simulator.",
@@ -110,6 +121,9 @@ export default {
   admin_my_sets:     "My sets",
   admin_no_sets:     "No sets added yet.",
   admin_load:        "Load",
+  admin_optional:    "Optional",
+  admin_select_first:"— fill in options first —",
+  admin_correct_lbl: "Correct:",
 
   // Language
   lang_ro: "RO",

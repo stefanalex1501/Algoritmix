@@ -13,13 +13,13 @@
       <div class="cnt-opts">
         <div class="row"><label>{{ t('admin_options') }} 1 *</label><input v-model="newQ.opt1" placeholder="Ex: O(n²)" /></div>
         <div class="row"><label>{{ t('admin_options') }} 2 *</label><input v-model="newQ.opt2" placeholder="Ex: O(n log n)" /></div>
-        <div class="row"><label>{{ t('admin_options') }} 3</label><input v-model="newQ.opt3" placeholder="Opțional" /></div>
-        <div class="row"><label>{{ t('admin_options') }} 4</label><input v-model="newQ.opt4" placeholder="Opțional" /></div>
+        <div class="row"><label>{{ t('admin_options') }} 3</label><input v-model="newQ.opt3" :placeholder="t('admin_optional')" /></div>
+        <div class="row"><label>{{ t('admin_options') }} 4</label><input v-model="newQ.opt4" :placeholder="t('admin_optional')" /></div>
       </div>
       <div class="row">
         <label>{{ t('admin_correct') }} *</label>
         <select v-model="newQ.correct" :disabled="newQOptions.length < 2">
-          <option value="">— completează opțiunile mai întâi —</option>
+          <option value="">{{ t('admin_select_first') }}</option>
           <option v-for="o in newQOptions" :key="o" :value="o">{{ o }}</option>
         </select>
       </div>
@@ -36,7 +36,7 @@
         <li v-for="q in customQuestions" :key="q.id" class="cnt-item">
           <div class="cnt-item-body">
             <p class="cnt-q">{{ q.prompt }}</p>
-            <p class="cnt-ans">Corect: <strong>{{ q.correct }}</strong>
+            <p class="cnt-ans">{{ t('admin_correct_lbl') }} <strong>{{ q.correct }}</strong>
               <span v-if="q.explanation" class="cnt-expl"> · {{ q.explanation }}</span>
             </p>
           </div>

@@ -25,6 +25,12 @@ export default {
   // Simulator — grade filtre
   filter_all:   "Toate",
   filter_grade: "Clasa a {g}-a",
+  label_class:  "Clasă:",
+
+  // BFS info
+  bfs_visit_order: "Ordine vizitare:",
+  bfs_queue:       "Coadă:",
+  bfs_stack:       "Stivă:",
 
   // Simulator — vizualizare
   grade_badge:   "Clasa a {g}-a",
@@ -90,6 +96,11 @@ export default {
   stats_no_data:    "Folosește Simulatorul și Quiz-ul pentru a vedea statistici ale sesiunii.",
   stats_no_mistakes:"Nicio greșeală înregistrată — continuă tot așa!",
 
+  // Stats
+  stats_progress:    "Progresul sesiunii",
+  stats_recent_ans:  "Ultimele răspunsuri",
+  stats_correct_ans: "Răspuns corect:",
+
   // Admin / Conținut
   admin_title:       "Panou conținut",
   admin_desc:        "Adaugă întrebări personalizate în Quiz și seturi de exerciții pentru Simulator.",
@@ -110,6 +121,9 @@ export default {
   admin_my_sets:     "Seturile mele",
   admin_no_sets:     "Niciun set adăugat încă.",
   admin_load:        "Încarcă",
+  admin_optional:    "Opțional",
+  admin_select_first:"— completează opțiunile mai întâi —",
+  admin_correct_lbl: "Corect:",
 
   // Limbă
   lang_ro: "RO",

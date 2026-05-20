@@ -25,7 +25,7 @@
     </div>
 
     <template v-if="stats.quiz.total > 0">
-      <h3 class="stats-section-title">{{ t('stats_history') }}</h3>
+      <h3 class="stats-section-title">{{ t('stats_progress') }}</h3>
       <div class="answer-strip">
         <div
           v-for="a in [...stats.quiz.recent].reverse()"
@@ -53,13 +53,13 @@
       <div class="mistakes-list">
         <div v-for="(m, i) in stats.mistakes" :key="i" class="mistake-item">
           <p class="mistake-q">{{ m.prompt }}</p>
-          <p class="mistake-ans">{{ t('about_when') }} <strong>{{ m.correctId }}</strong></p>
+          <p class="mistake-ans">{{ t('stats_correct_ans') }} <strong>{{ m.correctId }}</strong></p>
         </div>
       </div>
     </template>
 
     <template v-if="stats.quiz.recent.length > 0">
-      <h3 class="stats-section-title">{{ t('stats_history') }}</h3>
+      <h3 class="stats-section-title">{{ t('stats_recent_ans') }}</h3>
       <div class="recent-list">
         <div v-for="a in stats.quiz.recent" :key="a.id" class="recent-item">
           <span class="recent-dot" :class="a.correct ? 'dot-ok' : 'dot-bad'">{{ a.correct ? '✓' : '✗' }}</span>
