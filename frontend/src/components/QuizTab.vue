@@ -124,7 +124,7 @@ import { useStats } from "../composables/useStats.js";
 import { useCustomContent } from "../composables/useCustomContent.js";
 
 const { t } = useI18n();
-const { stats, quizSession, saveStats } = useStats();
+const { stats, quizSession, saveStats, trackAlgorithm } = useStats();
 const { customQuestions } = useCustomContent();
 
 const quiz = reactive({
@@ -357,6 +357,7 @@ function answerQuiz(choice) {
   stats.quiz.total++;
   if (quiz.correct) stats.quiz.correct++;
   stats.quiz.byType[quiz.type].total++;
+  if (quiz.type === "visual") trackAlgorithm(quiz.vizAlgo, quiz.correct);
   if (quiz.correct) stats.quiz.byType[quiz.type].correct++;
   stats.quiz.recent.unshift({ correct: quiz.correct, prompt: quiz.prompt, id: stats.quiz.total });
   if (stats.quiz.recent.length > 15) stats.quiz.recent.pop();

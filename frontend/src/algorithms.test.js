@@ -3,7 +3,10 @@ import {
   parseVector,
   bubbleSortSteps,
   selectionSortSteps,
+  insertionSortSteps,
+  mergeSortSteps,
   quickSortSteps,
+  linearSearchSteps,
   binarySearchSteps,
   bfsSteps,
   dfsSteps,
@@ -203,6 +206,120 @@ describe("dfsSteps", () => {
   });
 });
 
+// ── insertionSortSteps ────────────────────────────────────
+describe("insertionSortSteps", () => {
+  it("ultimul pas conține vectorul sortat", () => {
+    const steps = insertionSortSteps([5, 3, 1, 4, 2]);
+    expect(steps.at(-1).array).toEqual([1, 2, 3, 4, 5]);
+  });
+  it("primul pas are vectorul inițial cu pseudoLine -1", () => {
+    const steps = insertionSortSteps([3, 1, 2]);
+    expect(steps[0].array).toEqual([3, 1, 2]);
+    expect(steps[0].pseudoLine).toBe(-1);
+  });
+  it("există pași cu keyIdx definit (pseudoLine 1)", () => {
+    const steps = insertionSortSteps([3, 1, 2]);
+    const keyStep = steps.find((s) => s.pseudoLine === 1);
+    expect(keyStep).toBeDefined();
+    expect(keyStep.keyIdx).toBeDefined();
+  });
+  it("există pași de deplasare (pseudoLine 4) pe vector nesortat", () => {
+    const steps = insertionSortSteps([3, 1, 2]);
+    expect(steps.some((s) => s.pseudoLine === 4)).toBe(true);
+  });
+  it("există pași de inserare (pseudoLine 5)", () => {
+    const steps = insertionSortSteps([3, 1, 2]);
+    expect(steps.some((s) => s.pseudoLine === 5)).toBe(true);
+  });
+  it("sortedUpTo crește monoton", () => {
+    const steps = insertionSortSteps([4, 3, 2, 1]);
+    const vals = steps.filter((s) => s.sortedUpTo !== undefined).map((s) => s.sortedUpTo);
+    for (let i = 1; i < vals.length; i++) {
+      expect(vals[i]).toBeGreaterThanOrEqual(vals[i - 1]);
+    }
+  });
+  it("vector deja sortat produce niciun pas de deplasare", () => {
+    const steps = insertionSortSteps([1, 2, 3]);
+    expect(steps.some((s) => s.pseudoLine === 4)).toBe(false);
+  });
+  it("sortează corect un vector cu duplicate", () => {
+    const steps = insertionSortSteps([3, 1, 3, 2]);
+    expect(steps.at(-1).array).toEqual([1, 2, 3, 3]);
+  });
+});
+
+// ── linearSearchSteps ─────────────────────────────────────
+describe("linearSearchSteps", () => {
+  it("găsește un element existent", () => {
+    const steps = linearSearchSteps([4, 7, 2, 9, 1], 9);
+    const found = steps.find((s) => s.found === true);
+    expect(found).toBeDefined();
+    expect(found.active).toContain(3);
+  });
+  it("raportează not found pentru element lipsă", () => {
+    const steps = linearSearchSteps([1, 2, 3], 99);
+    expect(steps.some((s) => s.found === true)).toBe(false);
+    expect(steps.at(-1).pseudoLine).toBe(3);
+  });
+  it("primul pas are active gol și pseudoLine 0", () => {
+    const steps = linearSearchSteps([1, 2, 3], 2);
+    expect(steps[0].active).toHaveLength(0);
+    expect(steps[0].pseudoLine).toBe(0);
+  });
+  it("pașii de verificare au pseudoLine 1 și active cu un index", () => {
+    const steps = linearSearchSteps([5, 3, 8], 3);
+    const check = steps.find((s) => s.pseudoLine === 1);
+    expect(check).toBeDefined();
+    expect(check.active).toHaveLength(1);
+  });
+  it("se oprește imediat la primul element", () => {
+    const steps = linearSearchSteps([7, 1, 2], 7);
+    const found = steps.find((s) => s.found === true);
+    expect(found).toBeDefined();
+    expect(found.active[0]).toBe(0);
+  });
+  it("vectorul nu este modificat", () => {
+    const vec = [3, 1, 4, 1, 5];
+    const steps = linearSearchSteps(vec, 4);
+    steps.forEach((s) => expect(s.array).toEqual([3, 1, 4, 1, 5]));
+  });
+});
+
+// ── mergeSortSteps ────────────────────────────────────────
+describe("mergeSortSteps", () => {
+  it("ultimul pas conține vectorul sortat", () => {
+    const steps = mergeSortSteps([5, 3, 1, 4, 2]);
+    expect(steps.at(-1).array).toEqual([1, 2, 3, 4, 5]);
+  });
+  it("primul pas are vectorul inițial cu pseudoLine -1", () => {
+    const steps = mergeSortSteps([3, 1, 2]);
+    expect(steps[0].array).toEqual([3, 1, 2]);
+    expect(steps[0].pseudoLine).toBe(-1);
+  });
+  it("există pași de împărțire (pseudoLine 1)", () => {
+    const steps = mergeSortSteps([4, 2, 3, 1]);
+    expect(steps.some((s) => s.pseudoLine === 1)).toBe(true);
+  });
+  it("există pași de interclasare (pseudoLine 4) cu mergeRange definit", () => {
+    const steps = mergeSortSteps([4, 2, 3, 1]);
+    const mergeStep = steps.find((s) => s.pseudoLine === 4 && s.mergeRange !== null);
+    expect(mergeStep).toBeDefined();
+    expect(mergeStep.mergeRange).toHaveLength(2);
+  });
+  it("sortează corect un vector de 6 elemente", () => {
+    const steps = mergeSortSteps([8, 2, 6, 1, 4, 9]);
+    expect(steps.at(-1).array).toEqual([1, 2, 4, 6, 8, 9]);
+  });
+  it("sortează corect un vector cu duplicate", () => {
+    const steps = mergeSortSteps([3, 1, 3, 2]);
+    expect(steps.at(-1).array).toEqual([1, 2, 3, 3]);
+  });
+  it("vector cu un element nu produce pași de interclasare", () => {
+    const steps = mergeSortSteps([5]);
+    expect(steps.every((s) => s.mergeRange === null)).toBe(true);
+  });
+});
+
 // ── buildSteps ────────────────────────────────────────────
 describe("buildSteps", () => {
   it("returnează pași pentru bubbleSort", () => {
@@ -215,5 +332,14 @@ describe("buildSteps", () => {
   });
   it("returnează array gol pentru id necunoscut", () => {
     expect(buildSteps("unknown", {})).toEqual([]);
+  });
+  it("returnează pași pentru insertionSort", () => {
+    expect(buildSteps("insertionSort", { vector: [3, 1, 2] }).length).toBeGreaterThan(0);
+  });
+  it("returnează pași pentru mergeSort", () => {
+    expect(buildSteps("mergeSort", { vector: [3, 1, 2] }).length).toBeGreaterThan(0);
+  });
+  it("returnează pași pentru linearSearch", () => {
+    expect(buildSteps("linearSearch", { vector: [3, 1, 2], target: 1 }).length).toBeGreaterThan(0);
   });
 });

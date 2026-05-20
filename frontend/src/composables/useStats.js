@@ -9,6 +9,7 @@ const stats = reactive({
       visual: { total: 0, correct: 0 },
       text:   { total: 0, correct: 0 },
     },
+    byAlgorithm: {},
     recent: [],
   },
   sim: { runs: 0 },
@@ -46,10 +47,20 @@ function loadStats() {
   } catch {}
 }
 
+function trackAlgorithm(algoId, correct) {
+  if (!algoId) return;
+  if (!stats.quiz.byAlgorithm[algoId]) {
+    stats.quiz.byAlgorithm[algoId] = { total: 0, correct: 0 };
+  }
+  stats.quiz.byAlgorithm[algoId].total++;
+  if (correct) stats.quiz.byAlgorithm[algoId].correct++;
+}
+
 function resetStats() {
   stats.quiz.total = 0; stats.quiz.correct = 0; stats.quiz.bestStreak = 0;
   stats.quiz.byType.visual = { total: 0, correct: 0 };
   stats.quiz.byType.text   = { total: 0, correct: 0 };
+  stats.quiz.byAlgorithm   = {};
   stats.quiz.recent = [];
   stats.sim.runs = 0;
   stats.mistakes = [];
@@ -58,5 +69,5 @@ function resetStats() {
 }
 
 export function useStats() {
-  return { stats, quizSession, accuracy, saveStats, loadStats, resetStats };
+  return { stats, quizSession, accuracy, saveStats, loadStats, resetStats, trackAlgorithm };
 }

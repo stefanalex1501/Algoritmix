@@ -86,10 +86,12 @@ export default {
   stats_streak:     "Best streak",
   stats_runs:       "Simulations run",
   stats_reset:      "Reset",
+  stats_export:     "Export JSON",
   stats_history:    "Answer history",
   stats_correct_lbl:"Correct:",
   stats_wrong_lbl:  "Wrong:",
   stats_by_type:    "By question type",
+  stats_by_algo:    "By algorithm (visual questions)",
   stats_visual:     "Visual",
   stats_text:       "Text",
   stats_mistakes:   "To remember",
@@ -124,6 +126,19 @@ export default {
   admin_optional:    "Optional",
   admin_select_first:"— fill in options first —",
   admin_correct_lbl: "Correct:",
+
+  // Challenge mode
+  tab_challenge:        "Challenge",
+  challenge_title:      "Challenge Mode",
+  challenge_desc:       "Look at an algorithm step and choose what comes next.",
+  challenge_step:       "Current step",
+  challenge_question:   "Algorithm: {algo}",
+  challenge_current_state: "Current state:",
+  challenge_pick_next:  "Which is the state after the next step?",
+  challenge_right:      "Correct — you identified the next step!",
+  challenge_wrong:      "Wrong — the correct option is highlighted in green.",
+  challenge_next:       "New challenge →",
+  challenge_loading:    "Generating challenge...",
 
   // Language
   lang_ro: "RO",

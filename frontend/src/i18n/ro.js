@@ -86,10 +86,12 @@ export default {
   stats_streak:     "Serie maximă",
   stats_runs:       "Simulări rulate",
   stats_reset:      "Resetează",
+  stats_export:     "Exportă JSON",
   stats_history:    "Istoric răspunsuri",
   stats_correct_lbl:"Corecte:",
   stats_wrong_lbl:  "Greșite:",
   stats_by_type:    "Pe tip de întrebare",
+  stats_by_algo:    "Pe algoritm (întrebări vizuale)",
   stats_visual:     "Vizual",
   stats_text:       "Text",
   stats_mistakes:   "De reținut",
@@ -124,6 +126,19 @@ export default {
   admin_optional:    "Opțional",
   admin_select_first:"— completează opțiunile mai întâi —",
   admin_correct_lbl: "Corect:",
+
+  // Modul Încearcă Singur
+  tab_challenge:        "Încearcă Singur",
+  challenge_title:      "Încearcă Singur",
+  challenge_desc:       "Vizualizează un pas dintr-un algoritm și alege care este pasul următor corect.",
+  challenge_step:       "Pasul curent",
+  challenge_question:   "Algoritm: {algo}",
+  challenge_current_state: "Starea curentă:",
+  challenge_pick_next:  "Care este starea după pasul următor?",
+  challenge_right:      "Ai identificat corect pasul următor!",
+  challenge_wrong:      "Răspuns greșit — opțiunea corectă e marcată verde.",
+  challenge_next:       "Provocare nouă →",
+  challenge_loading:    "Se generează provocarea...",
 
   // Limbă
   lang_ro: "RO",

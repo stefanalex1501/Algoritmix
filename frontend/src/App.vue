@@ -5,22 +5,29 @@
         <h1>Algoritmix</h1>
         <p>{{ currentLang === 'ro' ? 'Laborator Virtual de Structuri de Date și Algoritmi (BAC România)' : 'Virtual Lab for Data Structures and Algorithms (Romanian BAC)' }}</p>
       </div>
-      <button class="lang-toggle" @click="toggleLang" :title="currentLang === 'ro' ? 'Switch to English' : 'Schimbă în Română'">
-        {{ currentLang === 'ro' ? '🌐 EN' : '🌐 RO' }}
-      </button>
+      <div class="hero-controls">
+        <button class="lang-toggle" @click="toggleLang" :title="currentLang === 'ro' ? 'Switch to English' : 'Schimbă în Română'">
+          {{ currentLang === 'ro' ? '🌐 EN' : '🌐 RO' }}
+        </button>
+        <button class="theme-toggle" @click="toggleTheme" :title="isDark ? 'Light mode' : 'Dark mode'">
+          {{ isDark ? '☀️' : '🌙' }}
+        </button>
+      </div>
     </header>
 
     <nav class="tabs">
       <button :class="{ active: tab === 'sim' }"     @click="tab = 'sim'">{{ t('tab_sim') }}</button>
       <button :class="{ active: tab === 'quiz' }"    @click="tab = 'quiz'">{{ t('tab_quiz') }}</button>
       <button :class="{ active: tab === 'stats' }"   @click="tab = 'stats'">{{ t('tab_stats') }}</button>
-      <button :class="{ active: tab === 'content' }" @click="tab = 'content'">{{ t('tab_admin') }}</button>
+      <button :class="{ active: tab === 'content' }"   @click="tab = 'content'">{{ t('tab_admin') }}</button>
+      <button :class="{ active: tab === 'challenge' }" @click="tab = 'challenge'">{{ t('tab_challenge') }}</button>
     </nav>
 
     <SimulatorTab v-if="tab === 'sim'" />
     <QuizTab      v-else-if="tab === 'quiz'" />
     <StatsTab     v-else-if="tab === 'stats'" />
-    <AdminTab     v-else-if="tab === 'content'" @load-set="tab = 'sim'" />
+    <AdminTab     v-else-if="tab === 'content'"   @load-set="tab = 'sim'" />
+    <ChallengeTab v-else-if="tab === 'challenge'" />
   </div>
 </template>
 
@@ -29,12 +36,15 @@ import { ref, onMounted } from "vue";
 import { useI18n }        from "./i18n/index.js";
 import { useStats }       from "./composables/useStats.js";
 import { useCustomContent } from "./composables/useCustomContent.js";
-import SimulatorTab from "./components/SimulatorTab.vue";
-import QuizTab      from "./components/QuizTab.vue";
-import StatsTab     from "./components/StatsTab.vue";
-import AdminTab     from "./components/AdminTab.vue";
+import { useTheme }       from "./composables/useTheme.js";
+import SimulatorTab   from "./components/SimulatorTab.vue";
+import QuizTab        from "./components/QuizTab.vue";
+import StatsTab       from "./components/StatsTab.vue";
+import AdminTab       from "./components/AdminTab.vue";
+import ChallengeTab   from "./components/ChallengeTab.vue";
 
 const { t, currentLang, toggleLang } = useI18n();
+const { isDark, toggleTheme } = useTheme();
 const { loadStats }          = useStats();
 const { loadCustomContent }  = useCustomContent();
 
@@ -44,9 +54,7 @@ onMounted(() => { loadStats(); loadCustomContent(); });
 </script>
 
 <style>
-:root {
-  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-  color: #cfe1f0;
+:root, [data-theme="dark"] {
   --bg:        #0d1520;
   --bg-card:   #131f2e;
   --bg-input:  #0f1a27;
@@ -57,6 +65,36 @@ onMounted(() => { loadStats(); loadCustomContent(); });
   --text:      #cfe1f0;
   --text-muted:#6a8faa;
   --text-label:#8fb3cc;
+  --pseudo-bg: #060e18;
+  --pseudo-border: #0e2035;
+  --pseudo-text: #3a6080;
+  --bar-inactive: #0d1a26;
+  --about-bg:  #0a1825;
+  --score-bg:  #0a2030;
+}
+
+[data-theme="light"] {
+  --bg:        #f0f4f8;
+  --bg-card:   #ffffff;
+  --bg-input:  #f8fafc;
+  --bg-result: #f1f5f9;
+  --border:    #cbd5e1;
+  --accent:    #1a8fd1;
+  --accent-hi: #0e6fa8;
+  --text:      #1e293b;
+  --text-muted:#64748b;
+  --text-label:#475569;
+  --pseudo-bg: #f8fafc;
+  --pseudo-border: #e2e8f0;
+  --pseudo-text: #64748b;
+  --bar-inactive: #e2e8f0;
+  --about-bg:  #f1f5f9;
+  --score-bg:  #e0f2fe;
+}
+
+:root {
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  color: var(--text);
 }
 
 * { box-sizing: border-box; }
@@ -67,8 +105,9 @@ body { margin: 0; background: var(--bg); }
 .hero-text { flex: 1; }
 .hero h1 { margin-bottom: 4px; color: var(--accent-hi); font-size: 2rem; letter-spacing: 0.5px; }
 .hero p  { margin-top: 0; color: var(--text-muted); }
-.lang-toggle { flex-shrink: 0; background: #0d2035; border: 1px solid var(--accent); color: var(--accent-hi); padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .15s; margin-top: 6px; }
-.lang-toggle:hover { background: #1a3a5a; }
+.hero-controls { display: flex; gap: 8px; flex-shrink: 0; margin-top: 6px; }
+.lang-toggle, .theme-toggle { background: var(--bg-result); border: 1px solid var(--accent); color: var(--accent-hi); padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .15s; }
+.lang-toggle:hover, .theme-toggle:hover { background: var(--about-bg); }
 
 /* ── Tabs ── */
 .tabs { display: flex; gap: 8px; margin: 14px 0; flex-wrap: wrap; }
@@ -127,8 +166,8 @@ select option { background: var(--bg-card); }
 .bsearch-idx { font-size: 10px; color: #3a5570; }
 
 /* ── Despre algoritm ── */
-.about-toggle { display: flex; justify-content: space-between; align-items: center; margin: 14px 0 0; padding: 10px 14px; background: #0a1825; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; font-size: 14px; color: var(--text-muted); transition: background .15s, border-color .15s; user-select: none; }
-.about-toggle:hover { background: #0f2030; border-color: var(--accent); color: var(--text); }
+.about-toggle { display: flex; justify-content: space-between; align-items: center; margin: 14px 0 0; padding: 10px 14px; background: var(--about-bg); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; font-size: 14px; color: var(--text-muted); transition: background .15s, border-color .15s; user-select: none; }
+.about-toggle:hover { background: var(--bg-result); border-color: var(--accent); color: var(--text); }
 .about-chevron { font-size: 11px; }
 .about-card { margin-top: 6px; padding: 14px 16px; background: var(--bg-result); border: 1px solid var(--border); border-radius: 10px; }
 .about-info { margin: 0 0 12px; font-size: 14px; color: var(--text); line-height: 1.6; }
@@ -137,6 +176,14 @@ select option { background: var(--bg-card); }
 .about-table td:first-child { color: var(--text-label); width: 140px; }
 .about-table td:last-child { font-family: monospace; color: var(--accent-hi); }
 .about-when { margin: 0; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+.about-body { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 10px; }
+.about-body .about-table { flex: 1; min-width: 200px; margin-bottom: 0; }
+.complexity-chart { flex: 1; min-width: 220px; }
+.cx-svg { width: 100%; display: block; }
+.cx-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.cx-leg-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-muted); padding: 2px 7px; border-radius: 12px; border: 1px solid var(--border); cursor: default; transition: color .15s; }
+.cx-leg-item.cx-leg-active { font-weight: 700; border-color: currentColor; }
+.cx-leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
 /* ── Buttons ── */
 .buttons { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -182,8 +229,8 @@ button.danger:hover { background: #b03030; }
 .pseudo-tabs button { background: #0f1a27; color: var(--text-muted); border: 1px solid var(--border); padding: 6px 14px; border-radius: 8px; font-size: 13px; }
 .pseudo-tabs button:hover { color: var(--text); border-color: var(--accent); }
 .pseudo-tabs button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-.pseudo-lines { background: #060e18; border: 1px solid #0e2035; border-radius: 10px; padding: 10px 6px; overflow-x: auto; }
-.pseudo-line { font-family: monospace; font-size: 13px; line-height: 2; color: #3a6080; padding: 1px 10px 1px 13px; border-radius: 5px; border-left: 3px solid transparent; white-space: pre; transition: background .25s, color .25s, border-color .25s; }
+.pseudo-lines { background: var(--pseudo-bg); border: 1px solid var(--pseudo-border); border-radius: 10px; padding: 10px 6px; overflow-x: auto; }
+.pseudo-line { font-family: monospace; font-size: 13px; line-height: 2; color: var(--pseudo-text); padding: 1px 10px 1px 13px; border-radius: 5px; border-left: 3px solid transparent; white-space: pre; transition: background .25s, color .25s, border-color .25s; }
 .pseudo-line-active { background: #0a2540; color: #e0f2ff; border-left: 3px solid var(--accent-hi); font-weight: bold; }
 
 /* ── Quiz ── */
@@ -191,7 +238,7 @@ button.danger:hover { background: #b03030; }
 .quiz-header h2 { margin: 0; }
 .quiz-prompt { font-size: 16px; color: var(--text); margin: 0 0 16px; line-height: 1.65; font-weight: 500; }
 .quiz-stats { display: flex; gap: 8px; align-items: center; flex-shrink: 0; margin-top: 6px; }
-.score-chip { background: #0a2030; border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 13px; color: var(--accent-hi); font-weight: 600; white-space: nowrap; }
+.score-chip { background: var(--score-bg); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 13px; color: var(--accent-hi); font-weight: 600; white-space: nowrap; }
 .streak-chip { background: #1a1000; border: 1px solid #6a4000; border-radius: 20px; padding: 4px 12px; font-size: 13px; color: #f0a020; font-weight: 600; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
 
 @keyframes flameBurn {
@@ -234,6 +281,9 @@ button.danger:hover { background: #b03030; }
 /* ── Statistici ── */
 .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 8px; }
 .stats-header h2 { margin: 0; }
+.stats-header-btns { display: flex; gap: 8px; }
+.btn-export { background: #0a1e30; border: 1px solid var(--accent); color: var(--accent-hi); padding: 7px 14px; font-size: 13px; border-radius: 8px; cursor: pointer; }
+.btn-export:hover { background: var(--about-bg); }
 .btn-reset { background: #1a0a0a; border: 1px solid #6a2020; color: #f87171; padding: 7px 14px; font-size: 13px; border-radius: 8px; cursor: pointer; }
 .btn-reset:hover { background: #2a1010; border-color: #ef4444; }
 .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
@@ -254,6 +304,14 @@ button.danger:hover { background: #b03030; }
 .stats-bar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width .5s ease; min-width: 2px; }
 .stats-bar-total { background: #2aa8f0; }
 .stats-bar-num { font-size: 12px; color: var(--text-muted); width: 44px; text-align: right; flex-shrink: 0; }
+.algo-stats-list { display: flex; flex-direction: column; gap: 8px; }
+.algo-stat-row { display: flex; align-items: center; gap: 10px; }
+.algo-stat-name { font-size: 13px; color: var(--text); width: 130px; flex-shrink: 0; }
+.algo-stat-pct { font-size: 12px; font-weight: 600; width: 38px; text-align: right; flex-shrink: 0; }
+.algo-stat-count { font-size: 11px; color: var(--text-muted); width: 40px; text-align: right; flex-shrink: 0; }
+.bar-good { background: #22c55e !important; color: #4ade80; }
+.bar-mid  { background: #f59e0b !important; color: #fbbf24; }
+.bar-low  { background: #ef4444 !important; color: #f87171; }
 .mistakes-list { display: flex; flex-direction: column; gap: 8px; }
 .mistake-item { padding: 10px 14px; background: #1a0a0a; border: 1px solid #5a1a1a; border-radius: 10px; }
 .mistake-q { margin: 0 0 5px; font-size: 13px; color: var(--text); line-height: 1.5; }
@@ -286,6 +344,25 @@ button.danger:hover { background: #b03030; }
 .cnt-expl { opacity: 0.7; font-style: italic; }
 .cnt-set-label { font-size: 13px; color: var(--text); }
 @media (max-width: 700px) { .cnt-opts { grid-template-columns: 1fr; } }
+
+/* ── Challenge ── */
+.challenge-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.challenge-header h2 { margin: 0; }
+.challenge-sublabel { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; margin: 0 0 8px; font-weight: 600; }
+.challenge-current { background: var(--bg-result); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+.challenge-question-lbl { font-size: 14px; font-weight: 600; color: var(--text); margin: 4px 0 10px; }
+.challenge-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.challenge-opt { background: var(--bg-input); border: 2px solid var(--border); border-radius: 10px; padding: 10px; cursor: pointer; transition: border-color .15s, background .15s; overflow: hidden; }
+.challenge-opt:hover { border-color: var(--accent); background: var(--bg-result); }
+.ch-opt-correct { border-color: #22c55e !important; background: #071a0e !important; }
+.ch-opt-wrong   { border-color: #ef4444 !important; background: #1a0707 !important; }
+.ch-opt-dim     { opacity: 0.4; }
+.ch-opt-array   { gap: 3px; }
+.ch-opt-bars    { height: 90px; gap: 3px; align-items: flex-end; display: flex; }
+.bar-wrap-sm    { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 2px; flex-shrink: 0; }
+.bar-sm         { width: 22px; min-height: 4px; border-radius: 4px 4px 0 0; }
+.bsearch-box-sm { width: 30px !important; height: 30px !important; font-size: 11px !important; }
+@media (max-width: 600px) { .challenge-options { grid-template-columns: 1fr; } }
 
 /* ── Misc ── */
 .muted { color: var(--text-muted); font-size: 14px; }

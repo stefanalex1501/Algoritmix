@@ -2,7 +2,10 @@
   <section class="card">
     <div class="stats-header">
       <h2>{{ t('stats_title') }}</h2>
-      <button class="btn-reset" @click="resetStats" v-if="stats.quiz.total > 0 || stats.sim.runs > 0">{{ t('stats_reset') }}</button>
+      <div class="stats-header-btns">
+        <button class="btn-export" @click="exportStats" v-if="stats.quiz.total > 0 || stats.sim.runs > 0">{{ t('stats_export') }}</button>
+        <button class="btn-reset"  @click="resetStats"  v-if="stats.quiz.total > 0 || stats.sim.runs > 0">{{ t('stats_reset') }}</button>
+      </div>
     </div>
 
     <div class="stats-grid">
@@ -48,6 +51,20 @@
       </div>
     </template>
 
+    <template v-if="Object.keys(stats.quiz.byAlgorithm).length > 0">
+      <h3 class="stats-section-title">{{ t('stats_by_algo') }}</h3>
+      <div class="algo-stats-list">
+        <div v-for="(data, algoId) in stats.quiz.byAlgorithm" :key="algoId" class="algo-stat-row">
+          <span class="algo-stat-name">{{ algoName(algoId) }}</span>
+          <div class="stats-bar-track">
+            <div class="stats-bar-fill" :class="algoBarClass(data)" :style="{ width: algoAccuracy(data) + '%' }"></div>
+          </div>
+          <span class="algo-stat-pct" :class="algoBarClass(data)">{{ algoAccuracy(data) }}%</span>
+          <span class="algo-stat-count">{{ data.correct }}/{{ data.total }}</span>
+        </div>
+      </div>
+    </template>
+
     <template v-if="stats.mistakes.length > 0">
       <h3 class="stats-section-title">{{ t('stats_mistakes') }}</h3>
       <div class="mistakes-list">
@@ -77,7 +94,31 @@
 <script setup>
 import { useStats } from "../composables/useStats.js";
 import { useI18n } from "../i18n/index.js";
+import { ALGORITHMS } from "../algorithms.js";
 
 const { t } = useI18n();
 const { stats, accuracy, resetStats } = useStats();
+
+function algoName(id)     { return ALGORITHMS[id]?.name || id; }
+function algoAccuracy(d)  { return d.total > 0 ? Math.round(d.correct / d.total * 100) : 0; }
+function algoBarClass(d)  {
+  const pct = algoAccuracy(d);
+  return pct >= 70 ? "bar-good" : pct >= 40 ? "bar-mid" : "bar-low";
+}
+
+function exportStats() {
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    quiz: stats.quiz,
+    sim: stats.sim,
+    mistakes: stats.mistakes,
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href     = url;
+  a.download = `algoritmix-stats-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 </script>

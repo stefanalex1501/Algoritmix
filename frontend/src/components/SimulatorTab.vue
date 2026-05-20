@@ -186,16 +186,19 @@
     </div>
     <div v-if="showAbout" class="about-card">
       <p class="about-info">{{ currentAlgo.info }}</p>
-      <table class="about-table">
-        <tr><td>{{ t('about_best') }}</td><td>{{ currentAlgo.complexity?.best }}</td></tr>
-        <tr><td>{{ t('about_avg') }}</td><td>{{ currentAlgo.complexity?.avg }}</td></tr>
-        <tr><td>{{ t('about_worst') }}</td><td>{{ currentAlgo.complexity?.worst }}</td></tr>
-        <tr><td>{{ t('about_space') }}</td><td>{{ currentAlgo.complexity?.space }}</td></tr>
-        <tr v-if="currentAlgo.stable !== null">
-          <td>{{ t('about_stable') }}</td>
-          <td :class="currentAlgo.stable ? 'ok' : 'bad'">{{ currentAlgo.stable ? t('about_yes') : t('about_no') }}</td>
-        </tr>
-      </table>
+      <div class="about-body">
+        <table class="about-table">
+          <tr><td>{{ t('about_best') }}</td><td>{{ currentAlgo.complexity?.best }}</td></tr>
+          <tr><td>{{ t('about_avg') }}</td><td>{{ currentAlgo.complexity?.avg }}</td></tr>
+          <tr><td>{{ t('about_worst') }}</td><td>{{ currentAlgo.complexity?.worst }}</td></tr>
+          <tr><td>{{ t('about_space') }}</td><td>{{ currentAlgo.complexity?.space }}</td></tr>
+          <tr v-if="currentAlgo.stable !== null">
+            <td>{{ t('about_stable') }}</td>
+            <td :class="currentAlgo.stable ? 'ok' : 'bad'">{{ currentAlgo.stable ? t('about_yes') : t('about_no') }}</td>
+          </tr>
+        </table>
+        <ComplexityChart :highlight="complexityHighlight" />
+      </div>
       <p class="about-when"><strong>{{ t('about_when') }}</strong> {{ currentAlgo.when }}</p>
     </div>
 
@@ -218,6 +221,7 @@
 <script setup>
 import { ref, computed, watch, onBeforeUnmount } from "vue";
 import { ALGORITHMS, parseVector, buildSteps, GRAPH_PRESETS } from "../algorithms.js";
+import ComplexityChart from "./ComplexityChart.vue";
 import { CPP_SNIPPETS, CPP_LINE_MAP } from "../cppSnippets.js";
 import { useI18n } from "../i18n/index.js";
 import { useStats } from "../composables/useStats.js";
@@ -371,6 +375,15 @@ function setFilter(grade) {
     buildSimulation();
   }
 }
+
+const COMPLEXITY_MAP = {
+  "O(1)": "O1", "O(n)": "On", "O(log n)": "Ologn",
+  "O(n log n)": "Onlogn", "O(n²)": "On2", "O(V+E)": "On",
+};
+const complexityHighlight = computed(() => {
+  const avg = currentAlgo.value.complexity?.avg;
+  return COMPLEXITY_MAP[avg] || null;
+});
 
 const activePseudoLines  = computed(() => ALGORITHMS[sim.algorithm]?.pseudocode || []);
 const activeCppLines     = computed(() => (CPP_SNIPPETS[sim.algorithm] || "").split("\n"));
