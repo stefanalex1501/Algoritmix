@@ -391,7 +391,8 @@ button.danger:hover { background: #b03030; }
 .pq-option:disabled { cursor: not-allowed; }
 
 /* ── Sparkline ── */
-.spark-svg { width: 100%; height: 64px; display: block; margin-top: 12px; border-radius: 6px; overflow: visible; }
+.spark-wrap { margin-top: 14px; background: var(--bg-result); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px 8px; }
+.spark-svg { width: 100%; height: 64px; display: block; overflow: visible; }
 
 /* ── Predict mode ── */
 .btn-predict { background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border); }

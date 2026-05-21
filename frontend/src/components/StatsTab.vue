@@ -49,12 +49,25 @@
         </div>
         <span class="stats-bar-num">{{ accuracy }}%</span>
       </div>
-      <svg v-if="sparkDots.length >= 3" viewBox="0 0 300 60" class="spark-svg" preserveAspectRatio="none">
-        <line x1="0" y1="30" x2="300" y2="30" stroke="var(--border)" stroke-width="1" stroke-dasharray="5,4"/>
-        <circle v-for="(d, i) in sparkDots" :key="i" :cx="d.x" :cy="d.y" r="5"
-          :fill="d.correct ? '#22c55e' : '#ef4444'"
-          :fill-opacity="0.85"/>
-      </svg>
+      <div v-if="sparkDots.length >= 3" class="spark-wrap">
+        <svg viewBox="0 0 300 64" class="spark-svg" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="sparkGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="64">
+              <stop offset="0%"   stop-color="#1a8fd1" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#1a8fd1" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line x1="0" y1="32" x2="300" y2="32" stroke="var(--border)" stroke-width="1" stroke-dasharray="4,3"/>
+          <path :d="sparkArea" fill="url(#sparkGrad)"/>
+          <path :d="sparkPath" fill="none" stroke="#1a8fd1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <g v-for="(d, i) in sparkDots" :key="i" :transform="`translate(${d.x},${d.y})`">
+            <rect x="-4.5" y="-4.5" width="9" height="9" :fill="d.correct ? '#22c55e' : '#ef4444'" transform="rotate(45)" rx="1.5"/>
+          </g>
+          <text x="299" y="6"  text-anchor="end" font-size="8" fill="#3a5570">100%</text>
+          <text x="299" y="34" text-anchor="end" font-size="8" fill="#3a5570">50%</text>
+          <text x="299" y="63" text-anchor="end" font-size="8" fill="#3a5570">0%</text>
+        </svg>
+      </div>
     </template>
 
     <template v-if="stats.quiz.byType.visual.total > 0 || stats.quiz.byType.text.total > 0 || stats.quiz.byType.pseudocode.total > 0">
@@ -147,11 +160,33 @@ const sparkDots = computed(() => {
     const win = items.slice(Math.max(0, i - 4), i + 1);
     const acc = win.filter(x => x.correct).length / win.length;
     const x = n === 1 ? 150 : Math.round(i * 300 / (n - 1));
-    const y = Math.round(59 - acc * 58);
+    const y = Math.round(62 - acc * 60);
     return { x, y, correct: item.correct };
   });
 });
-const sparkPoints = computed(() => sparkDots.value.map(d => `${d.x},${d.y}`).join(" "));
+
+const sparkPath = computed(() => {
+  const pts = sparkDots.value;
+  if (pts.length < 2) return '';
+  let d = `M ${pts[0].x},${pts[0].y}`;
+  for (let i = 1; i < pts.length; i++) {
+    const cpX = (pts[i - 1].x + pts[i].x) / 2;
+    d += ` C ${cpX},${pts[i - 1].y} ${cpX},${pts[i].y} ${pts[i].x},${pts[i].y}`;
+  }
+  return d;
+});
+
+const sparkArea = computed(() => {
+  const pts = sparkDots.value;
+  if (pts.length < 2) return '';
+  let d = `M ${pts[0].x},64 L ${pts[0].x},${pts[0].y}`;
+  for (let i = 1; i < pts.length; i++) {
+    const cpX = (pts[i - 1].x + pts[i].x) / 2;
+    d += ` C ${cpX},${pts[i - 1].y} ${cpX},${pts[i].y} ${pts[i].x},${pts[i].y}`;
+  }
+  d += ` L ${pts[pts.length - 1].x},64 Z`;
+  return d;
+});
 
 function algoName(id)     { return ALGORITHMS[id]?.name || id; }
 function algoAccuracy(d)  { return d.total > 0 ? Math.round(d.correct / d.total * 100) : 0; }
