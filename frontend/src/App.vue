@@ -309,6 +309,12 @@ button.danger:hover { background: #b03030; }
 .bar-good { background: #22c55e !important; color: #4ade80; }
 .bar-mid  { background: #f59e0b !important; color: #fbbf24; }
 .bar-low  { background: #ef4444 !important; color: #f87171; }
+.pct-good { color: #4ade80; font-weight: 700; }
+.pct-mid  { color: #fbbf24; font-weight: 700; }
+.pct-low  { color: #f87171; font-weight: 700; }
+[data-theme="light"] .pct-good { color: #16a34a; }
+[data-theme="light"] .pct-mid  { color: #b45309; }
+[data-theme="light"] .pct-low  { color: #b91c1c; }
 .mistakes-list { display: flex; flex-direction: column; gap: 8px; }
 .mistake-item { padding: 10px 14px; background: #1a0a0a; border: 1px solid #5a1a1a; border-radius: 10px; }
 .mistake-q { margin: 0 0 5px; font-size: 13px; color: var(--text); line-height: 1.5; }

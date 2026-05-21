@@ -50,11 +50,10 @@
         <span class="stats-bar-num">{{ accuracy }}%</span>
       </div>
       <svg v-if="sparkDots.length >= 3" viewBox="0 0 300 60" class="spark-svg" preserveAspectRatio="none">
-        <line x1="0" y1="30" x2="300" y2="30" stroke="var(--border)" stroke-width="1" stroke-dasharray="4,3"/>
-        <line x1="0" y1="1"  x2="300" y2="1"  stroke="var(--border)" stroke-width="0.5" opacity="0.5"/>
-        <line x1="0" y1="59" x2="300" y2="59" stroke="var(--border)" stroke-width="0.5" opacity="0.5"/>
-        <polyline :points="sparkPoints" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-        <circle v-for="(d, i) in sparkDots" :key="i" :cx="d.x" :cy="d.y" r="3.5" :fill="d.correct ? '#22c55e' : '#ef4444'"/>
+        <line x1="0" y1="30" x2="300" y2="30" stroke="var(--border)" stroke-width="1" stroke-dasharray="5,4"/>
+        <circle v-for="(d, i) in sparkDots" :key="i" :cx="d.x" :cy="d.y" r="5"
+          :fill="d.correct ? '#22c55e' : '#ef4444'"
+          :fill-opacity="0.85"/>
       </svg>
     </template>
 
@@ -66,7 +65,7 @@
           <div class="stats-bar-track">
             <div class="stats-bar-fill" :class="algoBarClass(stats.quiz.byType.visual)" :style="{ width: algoAccuracy(stats.quiz.byType.visual) + '%' }"></div>
           </div>
-          <span class="algo-stat-pct" :class="algoBarClass(stats.quiz.byType.visual)">{{ algoAccuracy(stats.quiz.byType.visual) }}%</span>
+          <span class="algo-stat-pct" :class="algoTextClass(stats.quiz.byType.visual)">{{ algoAccuracy(stats.quiz.byType.visual) }}%</span>
           <span class="algo-stat-count">{{ stats.quiz.byType.visual.correct }}/{{ stats.quiz.byType.visual.total }}</span>
         </div>
         <div v-if="stats.quiz.byType.text.total > 0" class="algo-stat-row">
@@ -74,7 +73,7 @@
           <div class="stats-bar-track">
             <div class="stats-bar-fill" :class="algoBarClass(stats.quiz.byType.text)" :style="{ width: algoAccuracy(stats.quiz.byType.text) + '%' }"></div>
           </div>
-          <span class="algo-stat-pct" :class="algoBarClass(stats.quiz.byType.text)">{{ algoAccuracy(stats.quiz.byType.text) }}%</span>
+          <span class="algo-stat-pct" :class="algoTextClass(stats.quiz.byType.text)">{{ algoAccuracy(stats.quiz.byType.text) }}%</span>
           <span class="algo-stat-count">{{ stats.quiz.byType.text.correct }}/{{ stats.quiz.byType.text.total }}</span>
         </div>
         <div v-if="stats.quiz.byType.pseudocode.total > 0" class="algo-stat-row">
@@ -82,7 +81,7 @@
           <div class="stats-bar-track">
             <div class="stats-bar-fill" :class="algoBarClass(stats.quiz.byType.pseudocode)" :style="{ width: algoAccuracy(stats.quiz.byType.pseudocode) + '%' }"></div>
           </div>
-          <span class="algo-stat-pct" :class="algoBarClass(stats.quiz.byType.pseudocode)">{{ algoAccuracy(stats.quiz.byType.pseudocode) }}%</span>
+          <span class="algo-stat-pct" :class="algoTextClass(stats.quiz.byType.pseudocode)">{{ algoAccuracy(stats.quiz.byType.pseudocode) }}%</span>
           <span class="algo-stat-count">{{ stats.quiz.byType.pseudocode.correct }}/{{ stats.quiz.byType.pseudocode.total }}</span>
         </div>
       </div>
@@ -96,7 +95,7 @@
           <div class="stats-bar-track">
             <div class="stats-bar-fill" :class="algoBarClass(data)" :style="{ width: algoAccuracy(data) + '%' }"></div>
           </div>
-          <span class="algo-stat-pct" :class="algoBarClass(data)">{{ algoAccuracy(data) }}%</span>
+          <span class="algo-stat-pct" :class="algoTextClass(data)">{{ algoAccuracy(data) }}%</span>
           <span class="algo-stat-count">{{ data.correct }}/{{ data.total }}</span>
         </div>
       </div>
@@ -159,6 +158,10 @@ function algoAccuracy(d)  { return d.total > 0 ? Math.round(d.correct / d.total 
 function algoBarClass(d)  {
   const pct = algoAccuracy(d);
   return pct >= 70 ? "bar-good" : pct >= 40 ? "bar-mid" : "bar-low";
+}
+function algoTextClass(d) {
+  const pct = algoAccuracy(d);
+  return pct >= 70 ? "pct-good" : pct >= 40 ? "pct-mid" : "pct-low";
 }
 
 function exportStats() {
