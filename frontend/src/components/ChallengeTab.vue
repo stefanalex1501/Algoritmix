@@ -202,6 +202,104 @@ const QUESTIONS = [
     options: ["  nod ← extrage din vârful stivei", "  nod ← extrage din baza stivei", "  nod ← extrage din coadă", "  nod ← primul nod nevizitat"],
     explanation: "DFS extrage din VÂRFUL stivei (LIFO) — acesta e motivul pentru care explorează în adâncime, urmând un drum până la capăt înainte de a reveni."
   },
+
+  // ── Heap Sort ─────────────────────────────────────────
+  {
+    algo: "heapSort",
+    pseudocode: ["construiește heap maxim:", "  pentru i = n/2 → 1: heapify(v, n, i)", "pentru i = n → 2:", "  interschimbă v[1] cu v[i]", "  heapify(v, i-1, 1)"],
+    blankLine: 1,
+    correct: "  pentru i = n/2 → 1: heapify(v, n, i)",
+    options: ["  pentru i = n/2 → 1: heapify(v, n, i)", "  pentru i = 1 → n: heapify(v, n, i)", "  pentru i = n → 1: heapify(v, n, i)", "  pentru i = n/2 → n: heapify(v, n, i)"],
+    explanation: "Construcția heap-ului pornește de la ultimul nod ne-frunză (n/2) și merge descrescător spre rădăcină (1). Frunzele sunt heap-uri triviale de 1 element — nu necesită heapify."
+  },
+  {
+    algo: "heapSort",
+    pseudocode: ["construiește heap maxim:", "  pentru i = n/2 → 1: heapify(v, n, i)", "pentru i = n → 2:", "  interschimbă v[1] cu v[i]", "  heapify(v, i-1, 1)"],
+    blankLine: 3,
+    correct: "  interschimbă v[1] cu v[i]",
+    options: ["  interschimbă v[1] cu v[i]", "  interschimbă v[1] cu v[n]", "  interschimbă v[i] cu v[i-1]", "  heapify(v, i, 1)"],
+    explanation: "Maximul heap-ului este mereu v[1]. Îl punem pe poziția finală (v[i]), apoi reducem heap-ul la i-1 elemente și refacem proprietatea cu heapify."
+  },
+
+  // ── Counting Sort ─────────────────────────────────────
+  {
+    algo: "countingSort",
+    pseudocode: ["pentru i = 1 → n: f[v[i]]++", "pentru val = 0 → max(v):", "  cât timp f[val] > 0:", "    plasează val în output; f[val]--"],
+    blankLine: 0,
+    correct: "pentru i = 1 → n: f[v[i]]++",
+    options: ["pentru i = 1 → n: f[v[i]]++", "pentru i = 1 → n: f[i]++", "pentru i = 0 → n: f[v[i]]++", "pentru i = 1 → n: f[v[i]]--"],
+    explanation: "f[v[i]]++ numără aparițiile valorii v[i]. Indexăm tabloul de frecvențe cu VALOAREA elementului (v[i]), nu cu poziția (i). Decrementarea ar face contorul negativ."
+  },
+  {
+    algo: "countingSort",
+    pseudocode: ["pentru i = 1 → n: f[v[i]]++", "pentru val = 0 → max(v):", "  cât timp f[val] > 0:", "    plasează val în output; f[val]--"],
+    blankLine: 2,
+    correct: "  cât timp f[val] > 0:",
+    options: ["  cât timp f[val] > 0:", "  dacă f[val] > 0:", "  cât timp f[val] ≥ 0:", "  cât timp f[val] = 1:"],
+    explanation: "Folosim 'cât timp' (nu 'dacă') deoarece o valoare poate apărea de mai multe ori. Plasăm val de exact f[val] ori în output, decrementând la fiecare plasare."
+  },
+
+  // ── Algoritmul lui Euclid ──────────────────────────────
+  {
+    algo: "euclid",
+    pseudocode: ["cât timp b ≠ 0:", "  r = a mod b", "  a = b", "  b = r", "afișează a  (= CMMDC)"],
+    blankLine: 0,
+    correct: "cât timp b ≠ 0:",
+    options: ["cât timp b ≠ 0:", "cât timp a ≠ 0:", "cât timp a ≠ b:", "cât timp r ≠ 0:"],
+    explanation: "Bucla continuă cât timp b ≠ 0. Când b devine 0, valoarea lui a este CMMDC-ul. Condiția a ≠ 0 sau a ≠ b ar produce un algoritm incorect."
+  },
+  {
+    algo: "euclid",
+    pseudocode: ["cât timp b ≠ 0:", "  r = a mod b", "  a = b", "  b = r", "afișează a  (= CMMDC)"],
+    blankLine: 1,
+    correct: "  r = a mod b",
+    options: ["  r = a mod b", "  r = b mod a", "  r = a - b", "  r = a / b"],
+    explanation: "r = a mod b (restul împărțirii lui a la b). Versiunea cu împărțiri converge în O(log min(a,b)) pași — mult mai rapid decât versiunea cu scăderi."
+  },
+  {
+    algo: "euclid",
+    pseudocode: ["cât timp b ≠ 0:", "  r = a mod b", "  a = b", "  b = r", "afișează a  (= CMMDC)"],
+    blankLine: 3,
+    correct: "  b = r",
+    options: ["  b = r", "  b = a", "  b = a mod r", "  b = r + a"],
+    explanation: "Ordinea este esențială: mai întâi a ← b (fostul b devine noul a), APOI b ← r (fostul rest devine noul b). Dacă am face invers, am pierde valoarea lui b."
+  },
+
+  // ── Verificare număr prim ──────────────────────────────
+  {
+    algo: "isPrime",
+    pseudocode: ["dacă n < 2: NU ESTE PRIM", "pentru d = 2 → √n:", "  dacă n mod d = 0: NU ESTE PRIM", "ESTE PRIM"],
+    blankLine: 1,
+    correct: "pentru d = 2 → √n:",
+    options: ["pentru d = 2 → √n:", "pentru d = 2 → n:", "pentru d = 2 → n/2:", "pentru d = 1 → √n:"],
+    explanation: "Testăm până la √n: dacă n are un divizor d > √n, atunci n/d < √n este și el un divizor, deja detectat. Testarea până la n ar fi redundantă și de 100× mai lentă."
+  },
+  {
+    algo: "isPrime",
+    pseudocode: ["dacă n < 2: NU ESTE PRIM", "pentru d = 2 → √n:", "  dacă n mod d = 0: NU ESTE PRIM", "ESTE PRIM"],
+    blankLine: 2,
+    correct: "  dacă n mod d = 0: NU ESTE PRIM",
+    options: ["  dacă n mod d = 0: NU ESTE PRIM", "  dacă n mod d ≠ 0: NU ESTE PRIM", "  dacă d mod n = 0: NU ESTE PRIM", "  dacă n / d = 0: NU ESTE PRIM"],
+    explanation: "n mod d = 0 înseamnă că d divide exact pe n → n nu este prim. Condiția ≠ 0 ar opri la primul non-divizor, ceea ce e greșit (vrem să continuăm când d nu divide n)."
+  },
+
+  // ── Ciurul lui Eratostene ─────────────────────────────
+  {
+    algo: "sieve",
+    pseudocode: ["pentru i = 2 → n: ciur[i] = adevărat", "pentru i = 2 → √n:", "  dacă ciur[i] = adevărat:", "    pentru j = i² → n, pas i:", "      ciur[j] = fals", "afișează i unde ciur[i] = adevărat"],
+    blankLine: 0,
+    correct: "pentru i = 2 → n: ciur[i] = adevărat",
+    options: ["pentru i = 2 → n: ciur[i] = adevărat", "pentru i = 0 → n: ciur[i] = adevărat", "pentru i = 1 → n: ciur[i] = adevărat", "pentru i = 2 → n: ciur[i] = fals"],
+    explanation: "Inițializăm de la 2 (0 și 1 nu sunt prime prin definiție) cu adevărat. Pornim cu toți ca prime și marcăm compusele — nu invers."
+  },
+  {
+    algo: "sieve",
+    pseudocode: ["pentru i = 2 → n: ciur[i] = adevărat", "pentru i = 2 → √n:", "  dacă ciur[i] = adevărat:", "    pentru j = i² → n, pas i:", "      ciur[j] = fals", "afișează i unde ciur[i] = adevărat"],
+    blankLine: 3,
+    correct: "    pentru j = i² → n, pas i:",
+    options: ["    pentru j = i² → n, pas i:", "    pentru j = 2i → n, pas i:", "    pentru j = i+1 → n, pas i:", "    pentru j = i² → n, pas 1:"],
+    explanation: "Pornim de la i² (nu 2i) deoarece multiplii mai mici (2i, 3i, …) au factori primi < i și au fost deja marcați anterior. Pasul este i — marcăm DOAR multiplii lui i."
+  },
 ];
 
 const idx      = ref(0);
