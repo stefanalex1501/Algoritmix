@@ -384,6 +384,22 @@ button.danger:hover { background: #b03030; }
 .pq-option:hover:not(:disabled) { background: var(--bg-result); border-color: var(--accent); }
 .pq-option:disabled { cursor: not-allowed; }
 
+/* ── Sparkline ── */
+.spark-svg { width: 100%; height: 64px; display: block; margin-top: 12px; border-radius: 6px; overflow: visible; }
+
+/* ── Predict mode ── */
+.btn-predict { background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border); }
+.btn-predict:hover { background: var(--bg-result); border-color: var(--accent); color: var(--text); }
+.btn-predict.active { background: #7c3aed; border-color: #8b5cf6; color: #fff; }
+.btn-predict.active:hover { background: #6d28d9; }
+.predict-banner { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; text-align: center; background: #0a1e30; border: 1px solid var(--accent); color: var(--accent-hi); margin-bottom: 10px; transition: background .25s, border-color .25s, color .25s; }
+.predict-correct { background: #0a2a14 !important; border-color: #22c55e !important; color: #4ade80 !important; }
+.predict-wrong   { background: #2a0a0a !important; border-color: #ef4444 !important; color: #f87171 !important; }
+.predict-clickable { cursor: crosshair !important; }
+.predict-clickable:hover { opacity: 0.75; }
+.predict-hit-ok  { outline: 3px solid #22c55e; box-shadow: 0 0 18px #22c55e99 !important; }
+.predict-hit-bad { outline: 3px solid #ef4444; box-shadow: 0 0 18px #ef444499 !important; }
+
 /* ── Misc ── */
 .muted { color: var(--text-muted); font-size: 14px; }
 .ok  { color: #4ade80; }

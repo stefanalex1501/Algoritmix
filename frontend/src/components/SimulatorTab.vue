@@ -52,10 +52,11 @@
 
       <div class="buttons">
         <button @click="buildSimulation" :disabled="loading">{{ t('btn_generate') }}</button>
-        <button @click="prevStep" :disabled="!steps.length || index === 0">{{ t('btn_prev') }}</button>
-        <button @click="nextStep" :disabled="!steps.length || index >= steps.length - 1">{{ t('btn_next') }}</button>
-        <button @click="togglePlay" :disabled="!steps.length">{{ playing ? t('btn_pause') : t('btn_play') }}</button>
+        <button @click="prevStep" :disabled="!steps.length || index === 0 || predictMode">{{ t('btn_prev') }}</button>
+        <button @click="nextStep" :disabled="!steps.length || index >= steps.length - 1 || predictMode">{{ t('btn_next') }}</button>
+        <button @click="togglePlay" :disabled="!steps.length || predictMode">{{ playing ? t('btn_pause') : t('btn_play') }}</button>
         <button @click="resetSimulation" :disabled="!steps.length || index === 0">{{ t('btn_reset') }}</button>
+        <button v-if="steps.length" class="btn-predict" :class="{ active: predictMode }" @click="togglePredict" :disabled="playing">{{ t('predict_toggle') }}</button>
       </div>
       <div class="speed-row">
         <span class="speed-label">{{ t('label_speed') }}</span>
@@ -78,6 +79,10 @@
       <div class="progress-bar">
         <div class="progress-fill" :style="{ width: ((index + 1) / steps.length * 100) + '%' }"></div>
       </div>
+      <div v-if="predictMode" class="predict-banner" :class="predictResult ? ('predict-' + predictResult) : ''">
+        <template v-if="!predictResult">{{ index < steps.length - 1 ? t('predict_instruction') : t('predict_last') }}</template>
+        <template v-else>{{ predictResult === 'correct' ? t('predict_correct') : t('predict_wrong') }}</template>
+      </div>
 
       <!-- Căutare Binară -->
       <div v-if="sim.algorithm === 'binarySearch'" class="bsearch-viz">
@@ -87,7 +92,11 @@
         </div>
         <div class="bsearch-array">
           <div v-for="(val, i) in currentStep.array" :key="i" class="bsearch-cell">
-            <div class="bsearch-box" :class="[bsearchBoxClass(i), changedIndices.has(i) ? 'bar-changed' : '']">{{ val }}</div>
+            <div class="bsearch-box"
+              :class="[bsearchBoxClass(i), changedIndices.has(i) ? 'bar-changed' : '',
+                predictMode && !predictResult && index < steps.length - 1 ? 'predict-clickable' : '',
+                predictMode && predictedIdx === i ? (predictResult === 'correct' ? 'predict-hit-ok' : predictResult === 'wrong' ? 'predict-hit-bad' : '') : '']"
+              @click="predictClick(i)">{{ val }}</div>
             <div class="bsearch-markers">
               <span v-if="i === currentStep.left"  class="mk-st">st</span>
               <span v-if="i === currentStep.mid"   class="mk-mij">mij</span>
@@ -111,7 +120,11 @@
         </div>
         <div class="bsearch-array">
           <div v-for="(val, i) in currentStep.array" :key="i" class="bsearch-cell">
-            <div class="bsearch-box" :class="[linearSearchBoxClass(i), changedIndices.has(i) ? 'bar-changed' : '']">{{ val }}</div>
+            <div class="bsearch-box"
+              :class="[linearSearchBoxClass(i), changedIndices.has(i) ? 'bar-changed' : '',
+                predictMode && !predictResult && index < steps.length - 1 ? 'predict-clickable' : '',
+                predictMode && predictedIdx === i ? (predictResult === 'correct' ? 'predict-hit-ok' : predictResult === 'wrong' ? 'predict-hit-bad' : '') : '']"
+              @click="predictClick(i)">{{ val }}</div>
             <div class="bsearch-idx">{{ i + 1 }}</div>
           </div>
         </div>
@@ -126,7 +139,11 @@
         <div class="bars">
           <div v-for="(val, i) in currentStep.array" :key="i" class="bar-wrap">
             <span class="bar-val">{{ val }}</span>
-            <div class="bar" :style="barStyle(val, i)" :class="{ 'bar-changed': changedIndices.has(i) }"></div>
+            <div class="bar" :style="barStyle(val, i)"
+              :class="[changedIndices.has(i) ? 'bar-changed' : '',
+                predictMode && !predictResult && index < steps.length - 1 ? 'predict-clickable' : '',
+                predictMode && predictedIdx === i ? (predictResult === 'correct' ? 'predict-hit-ok' : predictResult === 'wrong' ? 'predict-hit-bad' : '') : '']"
+              @click="predictClick(i)"></div>
             <span class="bar-idx">{{ i + 1 }}</span>
           </div>
         </div>
@@ -159,8 +176,13 @@
             </marker>
           </defs>
           <line v-for="([a, b]) in BFS_EDGES" :key="a + b" v-bind="edgeLine(a, b)" stroke="#2a4a6a" stroke-width="2" marker-end="url(#arr)" />
-          <g v-for="(pos, nodeId) in BFS_NODES" :key="nodeId">
-            <circle :cx="pos.x" :cy="pos.y" r="20" :fill="bfsNodeFill(nodeId)" :stroke="bfsNodeStroke(nodeId)" stroke-width="2.5" class="bfs-node" />
+          <g v-for="(pos, nodeId) in BFS_NODES" :key="nodeId"
+             @click="predictClickNode(nodeId)"
+             :style="predictMode && !predictResult && index < steps.length - 1 ? 'cursor:crosshair' : ''">
+            <circle :cx="pos.x" :cy="pos.y" r="20" :fill="bfsNodeFill(nodeId)"
+              :stroke="predictMode && predictedNode === nodeId && predictResult ? (predictResult === 'correct' ? '#22c55e' : '#ef4444') : bfsNodeStroke(nodeId)"
+              :stroke-width="predictMode && predictedNode === nodeId && predictResult ? 4 : 2.5"
+              class="bfs-node" />
             <text :x="pos.x" :y="pos.y + 5" text-anchor="middle" font-size="14" font-weight="bold" :fill="bfsNodeText(nodeId)">{{ nodeId }}</text>
           </g>
         </svg>
@@ -250,6 +272,12 @@ const codeView   = ref("pseudo");
 const filterGrade = ref(null);
 const playSpeed  = ref(1);
 let timer        = null;
+
+const predictMode   = ref(false);
+const predictResult = ref(null);
+const predictedIdx  = ref(null);
+const predictedNode = ref(null);
+let predictTimer    = null;
 
 // Watch for preset loads from AdminTab
 watch(pendingBuild, (val) => {
@@ -400,6 +428,59 @@ const activeCppLines     = computed(() => (CPP_SNIPPETS[sim.algorithm] || "").sp
 const activeLine         = computed(() => { const pl = currentStep.value.pseudoLine; return pl !== undefined ? pl : -1; });
 const activeCppHighlight = computed(() => new Set(CPP_LINE_MAP[sim.algorithm]?.[activeLine.value] || []));
 
+function getNextActiveIndices() {
+  if (index.value >= steps.value.length - 1) return new Set();
+  const next = steps.value[index.value + 1];
+  if (!next) return new Set();
+  const s = new Set();
+  if (sim.algorithm === 'binarySearch') {
+    if (next.mid != null) s.add(next.mid);
+  } else if (sim.algorithm === 'linearSearch') {
+    (next.active || []).forEach(x => s.add(x));
+  } else {
+    (next.active || []).forEach(x => s.add(x));
+    if (next.pivot  != null) s.add(next.pivot);
+    if (next.minIdx != null) s.add(next.minIdx);
+    if (next.keyIdx != null) s.add(next.keyIdx);
+  }
+  return s;
+}
+
+function predictClick(i) {
+  if (!predictMode.value || predictResult.value !== null) return;
+  if (index.value >= steps.value.length - 1) return;
+  predictedIdx.value  = i;
+  predictResult.value = getNextActiveIndices().has(i) ? 'correct' : 'wrong';
+  if (predictTimer) clearTimeout(predictTimer);
+  predictTimer = setTimeout(() => {
+    predictResult.value = null;
+    predictedIdx.value  = null;
+    nextStep();
+  }, 900);
+}
+
+function predictClickNode(nodeId) {
+  if (!predictMode.value || predictResult.value !== null) return;
+  if (index.value >= steps.value.length - 1) return;
+  predictedNode.value = nodeId;
+  const next = steps.value[index.value + 1];
+  predictResult.value = next?.current === nodeId ? 'correct' : 'wrong';
+  if (predictTimer) clearTimeout(predictTimer);
+  predictTimer = setTimeout(() => {
+    predictResult.value = null;
+    predictedNode.value = null;
+    nextStep();
+  }, 900);
+}
+
+function togglePredict() {
+  predictMode.value = !predictMode.value;
+  if (predictMode.value) stopPlay();
+  predictResult.value = null;
+  predictedIdx.value  = null;
+  predictedNode.value = null;
+}
+
 function randomVector() {
   const len = 6 + Math.floor(Math.random() * 4);
   if (sim.algorithm === "binarySearch") {
@@ -419,6 +500,11 @@ function randomVector() {
 
 async function buildSimulation() {
   stopPlay();
+  predictMode.value   = false;
+  predictResult.value = null;
+  predictedIdx.value  = null;
+  predictedNode.value = null;
+  if (predictTimer) { clearTimeout(predictTimer); predictTimer = null; }
   loading.value = true;
   await new Promise(r => setTimeout(r, 0));
   let payload;
@@ -467,7 +553,7 @@ function stopPlay() {
 }
 watch(playSpeed, () => { if (playing.value) startTimer(); });
 
-onBeforeUnmount(() => stopPlay());
+onBeforeUnmount(() => { stopPlay(); if (predictTimer) clearTimeout(predictTimer); });
 
 buildSimulation();
 </script>

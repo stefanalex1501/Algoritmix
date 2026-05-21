@@ -142,6 +142,13 @@ export default {
   challenge_algo:   "Algorithm",
   challenge_question: "Which line replaces ???",
 
+  // Predict mode
+  predict_toggle:      "Predict",
+  predict_instruction: "Click the element that will be active in the next step",
+  predict_correct:     "✓ Correct!",
+  predict_wrong:       "✗ Wrong!",
+  predict_last:        "Last step!",
+
   // Language
   lang_ro: "RO",
   lang_en: "EN",

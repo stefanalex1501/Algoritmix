@@ -49,6 +49,13 @@
         </div>
         <span class="stats-bar-num">{{ accuracy }}%</span>
       </div>
+      <svg v-if="sparkDots.length >= 3" viewBox="0 0 300 60" class="spark-svg" preserveAspectRatio="none">
+        <line x1="0" y1="30" x2="300" y2="30" stroke="var(--border)" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="0" y1="1"  x2="300" y2="1"  stroke="var(--border)" stroke-width="0.5" opacity="0.5"/>
+        <line x1="0" y1="59" x2="300" y2="59" stroke="var(--border)" stroke-width="0.5" opacity="0.5"/>
+        <polyline :points="sparkPoints" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle v-for="(d, i) in sparkDots" :key="i" :cx="d.x" :cy="d.y" r="3.5" :fill="d.correct ? '#22c55e' : '#ef4444'"/>
+      </svg>
     </template>
 
     <template v-if="stats.quiz.byType.visual.total > 0 || stats.quiz.byType.text.total > 0 || stats.quiz.byType.pseudocode.total > 0">
@@ -132,6 +139,20 @@ const { t } = useI18n();
 const { stats, accuracy, resetStats } = useStats();
 
 const recentReversed = computed(() => [...stats.quiz.recent].reverse());
+
+const sparkDots = computed(() => {
+  const items = [...stats.quiz.recent].reverse();
+  const n = items.length;
+  if (n < 2) return [];
+  return items.map((item, i) => {
+    const win = items.slice(Math.max(0, i - 4), i + 1);
+    const acc = win.filter(x => x.correct).length / win.length;
+    const x = n === 1 ? 150 : Math.round(i * 300 / (n - 1));
+    const y = Math.round(59 - acc * 58);
+    return { x, y, correct: item.correct };
+  });
+});
+const sparkPoints = computed(() => sparkDots.value.map(d => `${d.x},${d.y}`).join(" "));
 
 function algoName(id)     { return ALGORITHMS[id]?.name || id; }
 function algoAccuracy(d)  { return d.total > 0 ? Math.round(d.correct / d.total * 100) : 0; }

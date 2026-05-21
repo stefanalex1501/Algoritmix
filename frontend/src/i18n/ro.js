@@ -142,6 +142,13 @@ export default {
   challenge_algo:   "Algoritm",
   challenge_question: "Ce linie înlocuiește ???",
 
+  // Mod predicție
+  predict_toggle:      "Predicție",
+  predict_instruction: "Click pe elementul care va fi activ în pasul următor",
+  predict_correct:     "✓ Corect!",
+  predict_wrong:       "✗ Greșit!",
+  predict_last:        "Ultimul pas!",
+
   // Limbă
   lang_ro: "RO",
   lang_en: "EN",
