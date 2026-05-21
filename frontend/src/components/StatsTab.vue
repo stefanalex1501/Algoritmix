@@ -31,7 +31,7 @@
       <h3 class="stats-section-title">{{ t('stats_progress') }}</h3>
       <div class="answer-strip">
         <div
-          v-for="a in [...stats.quiz.recent].reverse()"
+          v-for="a in recentReversed"
           :key="a.id"
           class="strip-cell"
           :class="a.correct ? 'strip-ok' : 'strip-bad'"
@@ -92,12 +92,15 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { useStats } from "../composables/useStats.js";
 import { useI18n } from "../i18n/index.js";
 import { ALGORITHMS } from "../algorithms.js";
 
 const { t } = useI18n();
 const { stats, accuracy, resetStats } = useStats();
+
+const recentReversed = computed(() => [...stats.quiz.recent].reverse());
 
 function algoName(id)     { return ALGORITHMS[id]?.name || id; }
 function algoAccuracy(d)  { return d.total > 0 ? Math.round(d.correct / d.total * 100) : 0; }

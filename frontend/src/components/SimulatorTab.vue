@@ -297,7 +297,7 @@ function bfsNodeText(id) {
 }
 
 const maxVal = computed(() => Math.max(...(steps.value[0]?.array || [1]), 1));
-const minVal = computed(() => Math.min(...(steps.value[0]?.array || [0])));
+const minVal = computed(() => { const a = steps.value[0]?.array; return a?.length ? Math.min(...a) : 0; });
 function barHeight(val) { return Math.max(Math.round((val / maxVal.value) * 160), 6); }
 
 function barStyle(val, idx) {

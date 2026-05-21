@@ -22,11 +22,11 @@ export const CPP_LINE_MAP = {
     5: [21]         // a[j+1] = cheie
   },
   mergeSort: {
-    0: [26],        // if(st < dr)
-    1: [28],        // mij = (st + dr) / 2
-    2: [29],        // mergesort(st, mij)
-    3: [30],        // mergesort(mij+1, dr)
-    4: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]  // interclaseaza
+    0: [21],        // if(st < dr)
+    1: [23],        // int mij = (st + dr) / 2
+    2: [24],        // mergesort(st, mij)
+    3: [25],        // mergesort(mij + 1, dr)
+    4: [8, 9, 10, 11, 12, 13, 14, 15, 16]  // interclaseaza body
   },
   quickSort: {
     0: [8],         // int p = a[dr], k = st - 1
