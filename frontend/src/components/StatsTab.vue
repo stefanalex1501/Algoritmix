@@ -50,15 +50,15 @@
         <span class="stats-bar-num">{{ accuracy }}%</span>
       </div>
       <div v-if="sparkDots.length >= 3" class="spark-wrap">
-        <svg viewBox="0 0 300 64" class="spark-svg" preserveAspectRatio="none">
+        <svg viewBox="0 0 300 110" class="spark-svg" preserveAspectRatio="none">
           <defs>
-            <linearGradient id="sparkGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="64">
+            <linearGradient id="sparkGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="110">
               <stop offset="0%"   stop-color="#1a8fd1" stop-opacity="0.28"/>
               <stop offset="100%" stop-color="#1a8fd1" stop-opacity="0"/>
             </linearGradient>
           </defs>
-          <line x1="0" y1="32" x2="300" y2="32" stroke="var(--border)" stroke-width="1" stroke-dasharray="4,3"/>
-          <text x="3" y="29" font-size="8" fill="#3a5570">50%</text>
+          <line x1="0" y1="55" x2="300" y2="55" stroke="var(--border)" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="3" y="51" font-size="8" fill="#3a5570">50%</text>
           <path :d="sparkArea" fill="url(#sparkGrad)"/>
           <path :d="sparkPath" fill="none" stroke="#1a8fd1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <g v-for="(d, i) in sparkDots" :key="i" :transform="`translate(${d.x},${d.y})`">
@@ -158,7 +158,7 @@ const sparkDots = computed(() => {
     const win = items.slice(Math.max(0, i - 4), i + 1);
     const acc = win.filter(x => x.correct).length / win.length;
     const x = n === 1 ? 150 : Math.round(i * 300 / (n - 1));
-    const y = Math.round(62 - acc * 60);
+    const y = Math.round(106 - acc * 102);
     return { x, y, correct: item.correct };
   });
 });
@@ -177,12 +177,12 @@ const sparkPath = computed(() => {
 const sparkArea = computed(() => {
   const pts = sparkDots.value;
   if (pts.length < 2) return '';
-  let d = `M ${pts[0].x},64 L ${pts[0].x},${pts[0].y}`;
+  let d = `M ${pts[0].x},110 L ${pts[0].x},${pts[0].y}`;
   for (let i = 1; i < pts.length; i++) {
     const cpX = (pts[i - 1].x + pts[i].x) / 2;
     d += ` C ${cpX},${pts[i - 1].y} ${cpX},${pts[i].y} ${pts[i].x},${pts[i].y}`;
   }
-  d += ` L ${pts[pts.length - 1].x},64 Z`;
+  d += ` L ${pts[pts.length - 1].x},110 Z`;
   return d;
 });
 
