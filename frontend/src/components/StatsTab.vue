@@ -58,14 +58,12 @@
             </linearGradient>
           </defs>
           <line x1="0" y1="32" x2="300" y2="32" stroke="var(--border)" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="3" y="29" font-size="8" fill="#3a5570">50%</text>
           <path :d="sparkArea" fill="url(#sparkGrad)"/>
           <path :d="sparkPath" fill="none" stroke="#1a8fd1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <g v-for="(d, i) in sparkDots" :key="i" :transform="`translate(${d.x},${d.y})`">
             <rect x="-4.5" y="-4.5" width="9" height="9" :fill="d.correct ? '#22c55e' : '#ef4444'" transform="rotate(45)" rx="1.5"/>
           </g>
-          <text x="299" y="6"  text-anchor="end" font-size="8" fill="#3a5570">100%</text>
-          <text x="299" y="34" text-anchor="end" font-size="8" fill="#3a5570">50%</text>
-          <text x="299" y="63" text-anchor="end" font-size="8" fill="#3a5570">0%</text>
         </svg>
       </div>
     </template>
