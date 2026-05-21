@@ -127,6 +127,13 @@ export default {
   admin_select_first:"— completează opțiunile mai întâi —",
   admin_correct_lbl: "Corect:",
 
+  // Arbore recursivitate
+  tree_title:   "Arbore de recursivitate",
+  tree_active:  "Apel curent",
+  tree_done:    "Finalizat",
+  tree_merging: "Interclasare",
+  tree_pending: "În așteptare",
+
   // Quiz Pseudocod
   tab_challenge:    "Quiz Pseudocod",
   challenge_title:  "Quiz Pseudocod",

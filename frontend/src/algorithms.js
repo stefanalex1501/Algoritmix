@@ -240,37 +240,56 @@ export function selectionSortSteps(vector) {
  */
 export function quickSortSteps(vector) {
   const a = [...vector];
-  const steps = [{ array: [...a], message: "Vector inițial", pseudoLine: -1 }];
+  const treeNodes = [];   // referință partajată — complet construit la final
+  let nodeId = 0;
+  const done = new Set();
 
-  function partition(low, high) {
+  function addNode(left, right, parentId, depth) {
+    const id = nodeId++;
+    treeNodes.push({ id, left, right, parentId, depth, pivotAt: null, children: [] });
+    if (parentId !== null) treeNodes[parentId].children.push(id);
+    return id;
+  }
+
+  const steps = [{ array: [...a], message: "Vector inițial", pseudoLine: -1, treeNodes, activeNodeId: -1, doneNodeIds: [] }];
+
+  function push(extra) {
+    steps.push({ ...extra, treeNodes, doneNodeIds: [...done] });
+  }
+
+  function partition(low, high, nid) {
     const pivot = a[high];
     let i = low - 1;
-    steps.push({ array: [...a], range: [low, high], pivot: high, message: `Pivot = ${pivot}`, pseudoLine: 0 });
+    push({ array: [...a], range: [low, high], pivot: high, message: `Pivot = ${pivot}`, pseudoLine: 0, activeNodeId: nid });
 
     for (let j = low; j < high; j++) {
-      steps.push({ array: [...a], active: [j, high], range: [low, high], pivot: high, message: `Comparăm ${a[j]} cu pivot ${pivot}`, pseudoLine: 1 });
+      push({ array: [...a], active: [j, high], range: [low, high], pivot: high, message: `Comparăm ${a[j]} cu pivot ${pivot}`, pseudoLine: 1, activeNodeId: nid });
       if (a[j] <= pivot) {
         i++;
         [a[i], a[j]] = [a[j], a[i]];
-        steps.push({ array: [...a], active: [i, j], pivot: high, message: "Mutăm elementul în partea stângă", pseudoLine: 2 });
+        push({ array: [...a], active: [i, j], pivot: high, message: "Mutăm elementul în partea stângă", pseudoLine: 2, activeNodeId: nid });
       }
     }
 
     [a[i + 1], a[high]] = [a[high], a[i + 1]];
-    steps.push({ array: [...a], active: [i + 1, high], pivot: i + 1, message: "Plasăm pivotul pe poziția finală", pseudoLine: 3 });
-    return i + 1;
+    const p = i + 1;
+    treeNodes[nid].pivotAt = p;
+    push({ array: [...a], active: [p, high], pivot: p, message: "Plasăm pivotul pe poziția finală", pseudoLine: 3, activeNodeId: nid });
+    return p;
   }
 
-  function sort(low, high) {
+  function sort(low, high, parentId, depth) {
     if (low < high) {
-      const pi = partition(low, high);
-      sort(low, pi - 1);
-      sort(pi + 1, high);
+      const nid = addNode(low, high, parentId, depth);
+      const pi = partition(low, high, nid);
+      sort(low, pi - 1, nid, depth + 1);
+      sort(pi + 1, high, nid, depth + 1);
+      done.add(nid);
     }
   }
 
-  sort(0, a.length - 1);
-  steps.push({ array: [...a], message: "Sortare finalizată", pseudoLine: -1 });
+  sort(0, a.length - 1, null, 0);
+  steps.push({ array: [...a], message: "Sortare finalizată", pseudoLine: -1, treeNodes, activeNodeId: -1, doneNodeIds: [...done] });
   return steps;
 }
 
@@ -343,48 +362,66 @@ export function linearSearchSteps(vector, target) {
  */
 export function mergeSortSteps(vector) {
   const a = [...vector];
-  const steps = [{ array: [...a], active: [], mergeRange: null, message: "Vector inițial", pseudoLine: -1 }];
+  const treeNodes = [];
+  let nodeId = 0;
+  const done = new Set();
 
-  function merge(left, mid, right) {
+  function addNode(left, right, mid, parentId, depth) {
+    const id = nodeId++;
+    treeNodes.push({ id, left, right, mid, parentId, depth, children: [], phase: "split" });
+    if (parentId !== null) treeNodes[parentId].children.push(id);
+    return id;
+  }
+
+  const steps = [{ array: [...a], active: [], mergeRange: null, message: "Vector inițial", pseudoLine: -1, treeNodes, activeNodeId: -1, doneNodeIds: [] }];
+
+  function push(extra) {
+    steps.push({ ...extra, treeNodes, doneNodeIds: [...done] });
+  }
+
+  function merge(left, mid, right, nid) {
+    treeNodes[nid].phase = "merge";
     const L = a.slice(left, mid + 1);
     const R = a.slice(mid + 1, right + 1);
-    steps.push({ array: [...a], active: [], mergeRange: [left, right],
-      message: `Interclasăm [${left + 1}..${mid + 1}] cu [${mid + 2}..${right + 1}]`, pseudoLine: 4 });
+    push({ array: [...a], active: [], mergeRange: [left, right],
+      message: `Interclasăm [${left + 1}..${mid + 1}] cu [${mid + 2}..${right + 1}]`, pseudoLine: 4, activeNodeId: nid });
 
     let i = 0, j = 0, k = left;
     while (i < L.length && j < R.length) {
       const li = left + i, ri = mid + 1 + j;
       if (L[i] <= R[j]) {
-        steps.push({ array: [...a], active: [li, ri], mergeRange: [left, right],
-          message: `${L[i]} ≤ ${R[j]} → plasăm ${L[i]}`, pseudoLine: 4 });
+        push({ array: [...a], active: [li, ri], mergeRange: [left, right],
+          message: `${L[i]} ≤ ${R[j]} → plasăm ${L[i]}`, pseudoLine: 4, activeNodeId: nid });
         a[k++] = L[i++];
       } else {
-        steps.push({ array: [...a], active: [li, ri], mergeRange: [left, right],
-          message: `${L[i]} > ${R[j]} → plasăm ${R[j]}`, pseudoLine: 4 });
+        push({ array: [...a], active: [li, ri], mergeRange: [left, right],
+          message: `${L[i]} > ${R[j]} → plasăm ${R[j]}`, pseudoLine: 4, activeNodeId: nid });
         a[k++] = R[j++];
       }
-      steps.push({ array: [...a], active: [k - 1], mergeRange: [left, right],
-        message: `Plasat pe poziția ${k}`, pseudoLine: 4 });
+      push({ array: [...a], active: [k - 1], mergeRange: [left, right],
+        message: `Plasat pe poziția ${k}`, pseudoLine: 4, activeNodeId: nid });
     }
     while (i < L.length) { a[k++] = L[i++]; }
     while (j < R.length) { a[k++] = R[j++]; }
-    steps.push({ array: [...a], active: [], mergeRange: [left, right],
-      message: `Interval [${left + 1}..${right + 1}] interclasare finalizată`, pseudoLine: 4 });
+    push({ array: [...a], active: [], mergeRange: [left, right],
+      message: `Interval [${left + 1}..${right + 1}] interclasare finalizată`, pseudoLine: 4, activeNodeId: nid });
   }
 
-  function sort(left, right) {
+  function sort(left, right, parentId, depth) {
     if (left < right) {
       const mid = Math.floor((left + right) / 2);
-      steps.push({ array: [...a], active: [], mergeRange: null,
-        message: `Împărțim [${left + 1}..${right + 1}] → mijloc = ${mid + 1}`, pseudoLine: 1 });
-      sort(left, mid);
-      sort(mid + 1, right);
-      merge(left, mid, right);
+      const nid = addNode(left, right, mid, parentId, depth);
+      push({ array: [...a], active: [], mergeRange: null,
+        message: `Împărțim [${left + 1}..${right + 1}] → mijloc = ${mid + 1}`, pseudoLine: 1, activeNodeId: nid });
+      sort(left, mid, nid, depth + 1);
+      sort(mid + 1, right, nid, depth + 1);
+      merge(left, mid, right, nid);
+      done.add(nid);
     }
   }
 
-  sort(0, a.length - 1);
-  steps.push({ array: [...a], active: [], mergeRange: null, message: "Sortare finalizată", pseudoLine: -1 });
+  sort(0, a.length - 1, null, 0);
+  steps.push({ array: [...a], active: [], mergeRange: null, message: "Sortare finalizată", pseudoLine: -1, treeNodes, activeNodeId: -1, doneNodeIds: [...done] });
   return steps;
 }
 

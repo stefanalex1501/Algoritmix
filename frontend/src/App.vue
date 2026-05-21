@@ -345,6 +345,28 @@ button.danger:hover { background: #b03030; }
 .cnt-set-label { font-size: 13px; color: var(--text); }
 @media (max-width: 700px) { .cnt-opts { grid-template-columns: 1fr; } }
 
+/* ── Recursion Tree ── */
+.rec-tree-wrap { margin-top: 16px; padding: 12px 14px; background: var(--bg-result); border: 1px solid var(--border); border-radius: 10px; }
+.rec-tree-title { font-size: 12px; font-weight: 600; color: var(--text-label); text-transform: uppercase; letter-spacing: .05em; margin: 0 0 10px; }
+.rec-tree-scroll { overflow-x: auto; }
+.rec-tree-svg { display: block; }
+.rec-edge { stroke: var(--border); stroke-width: 1.5; }
+.rec-node { transition: fill .3s, stroke .3s; }
+.rec-node-active  { fill: var(--accent);  stroke: var(--accent-hi); stroke-width: 2; }
+.rec-node-merge   { fill: #5b21b6;        stroke: #7c3aed;          stroke-width: 2; }
+.rec-node-done    { fill: #1a4a2a;        stroke: #22c55e;          stroke-width: 1.5; }
+.rec-node-pending { fill: var(--bg-input); stroke: var(--border);    stroke-width: 1.5; }
+.rec-text { fill: var(--text-muted); font-family: monospace; }
+.rec-text-light { fill: #e0f2ff; font-family: monospace; }
+.rec-node-done ~ .rec-text { fill: #4ade80; }
+.rec-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.rec-leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-muted); }
+.rec-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.rec-dot-active  { background: var(--accent); }
+.rec-dot-merge   { background: #7c3aed; }
+.rec-dot-done    { background: #22c55e; }
+.rec-dot-pending { background: var(--bg-input); border: 1px solid var(--border); }
+
 /* ── Pseudocode Quiz ── */
 .challenge-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
 .challenge-header h2 { margin: 0; }

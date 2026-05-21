@@ -127,6 +127,13 @@ export default {
   admin_select_first:"— fill in options first —",
   admin_correct_lbl: "Correct:",
 
+  // Recursion tree
+  tree_title:   "Recursion tree",
+  tree_active:  "Current call",
+  tree_done:    "Done",
+  tree_merging: "Merging",
+  tree_pending: "Pending",
+
   // Pseudocode Quiz
   tab_challenge:    "Pseudocode Quiz",
   challenge_title:  "Pseudocode Quiz",

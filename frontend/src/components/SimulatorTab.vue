@@ -177,6 +177,15 @@
           <p v-if="currentStep.stack?.length"><strong>{{ t('bfs_stack') }}</strong> [ {{ currentStep.stack.join(', ') }} ]</p>
         </div>
       </div>
+      <!-- Arbore de recursivitate -->
+      <RecursionTree
+        v-if="(sim.algorithm === 'quickSort' || sim.algorithm === 'mergeSort') && currentStep.treeNodes?.length"
+        :nodes="currentStep.treeNodes"
+        :active-node-id="currentStep.activeNodeId ?? -1"
+        :done-node-ids="currentStep.doneNodeIds ?? []"
+        :array-len="currentStep.array?.length ?? 1"
+        :algo="sim.algorithm"
+      />
     </div>
 
     <!-- Despre algoritm -->
@@ -222,6 +231,7 @@
 import { ref, computed, watch, onBeforeUnmount } from "vue";
 import { ALGORITHMS, parseVector, buildSteps, GRAPH_PRESETS } from "../algorithms.js";
 import ComplexityChart from "./ComplexityChart.vue";
+import RecursionTree  from "./RecursionTree.vue";
 import { CPP_SNIPPETS, CPP_LINE_MAP } from "../cppSnippets.js";
 import { useI18n } from "../i18n/index.js";
 import { useStats } from "../composables/useStats.js";
