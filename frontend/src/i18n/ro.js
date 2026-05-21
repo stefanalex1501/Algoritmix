@@ -127,18 +127,12 @@ export default {
   admin_select_first:"— completează opțiunile mai întâi —",
   admin_correct_lbl: "Corect:",
 
-  // Modul Încearcă Singur
-  tab_challenge:        "Încearcă Singur",
-  challenge_title:      "Încearcă Singur",
-  challenge_desc:       "Vizualizează un pas dintr-un algoritm și alege care este pasul următor corect.",
-  challenge_step:       "Pasul curent",
-  challenge_question:   "Algoritm: {algo}",
-  challenge_current_state: "Starea curentă:",
-  challenge_pick_next:  "Care este starea după pasul următor?",
-  challenge_right:      "Ai identificat corect pasul următor!",
-  challenge_wrong:      "Răspuns greșit — opțiunea corectă e marcată verde.",
-  challenge_next:       "Provocare nouă →",
-  challenge_loading:    "Se generează provocarea...",
+  // Quiz Pseudocod
+  tab_challenge:    "Quiz Pseudocod",
+  challenge_title:  "Quiz Pseudocod",
+  challenge_desc:   "Pseudocodul are o linie lipsă — alege varianta corectă.",
+  challenge_algo:   "Algoritm",
+  challenge_question: "Ce linie înlocuiește ???",
 
   // Limbă
   lang_ro: "RO",

@@ -127,18 +127,12 @@ export default {
   admin_select_first:"— fill in options first —",
   admin_correct_lbl: "Correct:",
 
-  // Challenge mode
-  tab_challenge:        "Challenge",
-  challenge_title:      "Challenge Mode",
-  challenge_desc:       "Look at an algorithm step and choose what comes next.",
-  challenge_step:       "Current step",
-  challenge_question:   "Algorithm: {algo}",
-  challenge_current_state: "Current state:",
-  challenge_pick_next:  "Which is the state after the next step?",
-  challenge_right:      "Correct — you identified the next step!",
-  challenge_wrong:      "Wrong — the correct option is highlighted in green.",
-  challenge_next:       "New challenge →",
-  challenge_loading:    "Generating challenge...",
+  // Pseudocode Quiz
+  tab_challenge:    "Pseudocode Quiz",
+  challenge_title:  "Pseudocode Quiz",
+  challenge_desc:   "The pseudocode has a missing line — pick the correct one.",
+  challenge_algo:   "Algorithm",
+  challenge_question: "Which line replaces ???",
 
   // Language
   lang_ro: "RO",
