@@ -407,9 +407,10 @@ function randomVector() {
   buildSimulation();
 }
 
-function buildSimulation() {
+async function buildSimulation() {
   stopPlay();
   loading.value = true;
+  await new Promise(r => setTimeout(r, 0));
   let payload;
   const isGraph = sim.algorithm === "bfs" || sim.algorithm === "dfs";
   if (isGraph) {
@@ -438,18 +439,23 @@ function nextStep() {
   else stopPlay();
 }
 function resetSimulation() { stopPlay(); index.value = 0; }
-function togglePlay() {
-  if (playing.value) { stopPlay(); return; }
-  playing.value = true;
+function startTimer() {
+  if (timer) clearInterval(timer);
   timer = setInterval(() => {
     if (index.value >= steps.value.length - 1) { stopPlay(); return; }
     index.value++;
   }, Math.round(1600 / playSpeed.value));
 }
+function togglePlay() {
+  if (playing.value) { stopPlay(); return; }
+  playing.value = true;
+  startTimer();
+}
 function stopPlay() {
   playing.value = false;
   if (timer) { clearInterval(timer); timer = null; }
 }
+watch(playSpeed, () => { if (playing.value) startTimer(); });
 
 onBeforeUnmount(() => stopPlay());
 

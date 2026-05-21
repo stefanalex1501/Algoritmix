@@ -17,8 +17,8 @@
         :stroke="c.color"
         stroke-width="2"
         fill="none"
-        :stroke-dasharray="c.id === highlight ? '0' : '0'"
-        :opacity="highlight && c.id !== highlight ? 0.25 : 1"
+        :stroke-dasharray="highlight && c.id !== highlight ? '5,4' : 'none'"
+        :opacity="highlight && c.id !== highlight ? 0.3 : 1"
       />
 
       <!-- Labels at end of curves -->
