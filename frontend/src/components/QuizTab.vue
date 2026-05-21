@@ -1,5 +1,13 @@
 <template>
-  <section class="card">
+  <div class="quiz-wrapper">
+  <div class="quiz-mode-bar">
+    <button :class="['quiz-mode-btn', { active: mode === 'visual' }]" @click="mode = 'visual'">{{ t('quiz_title') }}</button>
+    <button :class="['quiz-mode-btn', { active: mode === 'pseudo' }]" @click="mode = 'pseudo'">{{ t('tab_challenge') }}</button>
+  </div>
+
+  <ChallengeTab v-if="mode === 'pseudo'" />
+
+  <section v-else class="card">
     <div class="quiz-header">
       <div>
         <h2>{{ t('quiz_title') }}</h2>
@@ -114,6 +122,7 @@
       {{ quiz.answered ? t('quiz_next') : t('quiz_skip') }}
     </button>
   </section>
+  </div>
 </template>
 
 <script setup>
@@ -122,8 +131,10 @@ import { ALGORITHMS, DEFAULT_GRAPH, bubbleSortSteps, selectionSortSteps, inserti
 import { useI18n } from "../i18n/index.js";
 import { useStats } from "../composables/useStats.js";
 import { useCustomContent } from "../composables/useCustomContent.js";
+import ChallengeTab from "./ChallengeTab.vue";
 
 const { t } = useI18n();
+const mode = ref("visual");
 const { stats, quizSession, saveStats, trackAlgorithm } = useStats();
 const { customQuestions } = useCustomContent();
 

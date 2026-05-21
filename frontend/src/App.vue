@@ -20,14 +20,12 @@
       <button :class="{ active: tab === 'quiz' }"    @click="tab = 'quiz'">{{ t('tab_quiz') }}</button>
       <button :class="{ active: tab === 'stats' }"   @click="tab = 'stats'">{{ t('tab_stats') }}</button>
       <button :class="{ active: tab === 'content' }"   @click="tab = 'content'">{{ t('tab_admin') }}</button>
-      <button :class="{ active: tab === 'challenge' }" @click="tab = 'challenge'">{{ t('tab_challenge') }}</button>
     </nav>
 
     <SimulatorTab v-if="tab === 'sim'" />
     <QuizTab      v-else-if="tab === 'quiz'" />
     <StatsTab     v-else-if="tab === 'stats'" />
     <AdminTab     v-else-if="tab === 'content'"   @load-set="tab = 'sim'" />
-    <ChallengeTab v-else-if="tab === 'challenge'" />
   </div>
 </template>
 
@@ -41,7 +39,6 @@ import SimulatorTab   from "./components/SimulatorTab.vue";
 import QuizTab        from "./components/QuizTab.vue";
 import StatsTab       from "./components/StatsTab.vue";
 import AdminTab       from "./components/AdminTab.vue";
-import ChallengeTab   from "./components/ChallengeTab.vue";
 
 const { t, currentLang, toggleLang } = useI18n();
 const { isDark, toggleTheme } = useTheme();
@@ -367,6 +364,13 @@ button.danger:hover { background: #b03030; }
 .rec-dot-merge   { background: #7c3aed; }
 .rec-dot-done    { background: #22c55e; }
 .rec-dot-pending { background: var(--bg-input); border: 1px solid var(--border); }
+
+/* ── Quiz mode toggle ── */
+.quiz-wrapper { display: flex; flex-direction: column; gap: 10px; }
+.quiz-mode-bar { display: flex; gap: 8px; }
+.quiz-mode-btn { background: var(--bg-card); color: var(--text-muted); border: 1px solid var(--border); padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background .15s, border-color .15s, color .15s; }
+.quiz-mode-btn:hover { background: var(--bg-result); border-color: var(--accent); color: var(--text); }
+.quiz-mode-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
 /* ── Pseudocode Quiz ── */
 .challenge-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
