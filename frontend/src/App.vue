@@ -173,6 +173,18 @@ select option { background: var(--bg-card); }
 .about-table td:first-child { color: var(--text-label); width: 140px; }
 .about-table td:last-child { font-family: monospace; color: var(--accent-hi); }
 .about-when { margin: 0; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+.about-pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+@media (max-width: 600px) { .about-pros-cons { grid-template-columns: 1fr; } }
+.about-list-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin: 0 0 6px; }
+.about-list-pro-title { color: #4ade80; }
+.about-list-con-title { color: #f87171; }
+.about-list { margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 4px; }
+.about-list li { font-size: 12px; line-height: 1.5; color: var(--text-muted); }
+.about-list-pro::marker { color: #4ade80; }
+.about-list-con::marker { color: #f87171; }
+.about-note { margin-top: 14px; padding: 10px 14px; background: #0a1e14; border: 1px solid #1a3a28; border-radius: 8px; font-size: 12px; color: var(--text-muted); line-height: 1.6; display: flex; gap: 8px; }
+.about-note-icon { flex-shrink: 0; font-size: 14px; }
+[data-theme="light"] .about-note { background: #f0fdf4; border-color: #bbf7d0; }
 .about-body { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 10px; }
 .about-body .about-table { flex: 1; min-width: 200px; margin-bottom: 0; }
 .complexity-chart { flex: 1; min-width: 220px; }

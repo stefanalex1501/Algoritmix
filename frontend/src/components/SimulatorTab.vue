@@ -295,6 +295,23 @@
         <ComplexityChart :highlight="complexityHighlight" />
       </div>
       <p class="about-when"><strong>{{ t('about_when') }}</strong> {{ currentAlgo.when }}</p>
+      <div v-if="currentAlgo.pros || currentAlgo.cons" class="about-pros-cons">
+        <div v-if="currentAlgo.pros">
+          <p class="about-list-title about-list-pro-title">{{ t('about_pros') }}</p>
+          <ul class="about-list">
+            <li v-for="item in currentAlgo.pros" :key="item" class="about-list-pro">{{ item }}</li>
+          </ul>
+        </div>
+        <div v-if="currentAlgo.cons">
+          <p class="about-list-title about-list-con-title">{{ t('about_cons') }}</p>
+          <ul class="about-list">
+            <li v-for="item in currentAlgo.cons" :key="item" class="about-list-con">{{ item }}</li>
+          </ul>
+        </div>
+      </div>
+      <div v-if="currentAlgo.note" class="about-note">
+        <span class="about-note-icon">💡</span>{{ currentAlgo.note }}
+      </div>
     </div>
 
     <!-- Pseudocod / Cod C++ -->

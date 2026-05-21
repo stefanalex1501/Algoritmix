@@ -13,7 +13,10 @@ export const ALGORITHMS = {
       "  pentru j = 1 → n-i:",
       "    dacă v[j] > v[j+1]:",
       "      interschimbă v[j] și v[j+1]"
-    ]
+    ],
+    pros: ["Simplu de implementat și de înțeles didactic", "Stabil — păstrează ordinea elementelor egale", "Varianta optimizată detectează vectorii deja sortați în O(n)"],
+    cons: ["O(n²) în cazul mediu și cel mai rău — ineficient pe date mari", "Multe interschimbări inutile față de Selection Sort"],
+    note: "Numele vine de la modul în care elementele mari «urcă» ca bulele de aer spre finalul vectorului la fiecare iterație."
   },
   selectionSort: {
     id: "selectionSort",
@@ -30,7 +33,10 @@ export const ALGORITHMS = {
       "  pentru j = i+1 → n:",
       "    dacă v[j] < v[min_idx]: min_idx = j",
       "  interschimbă v[i] și v[min_idx]"
-    ]
+    ],
+    pros: ["Minimizează numărul de interschimbări — maxim n−1 swap-uri", "Simplu de implementat", "Performanță predictibilă indiferent de date"],
+    cons: ["Nu este stabil în implementarea standard", "Nu beneficiază de vectori parțial sortați", "O(n²) în orice caz — nu există caz bun"],
+    note: "Selection Sort face mereu exact n·(n−1)/2 comparații, indiferent de ordinea inițială. Este algoritmul cu cele mai puține scrieri în memorie."
   },
   mergeSort: {
     id: "mergeSort",
@@ -47,7 +53,10 @@ export const ALGORITHMS = {
       "  mergesort(stânga, mijloc)",
       "  mergesort(mijloc+1, dreapta)",
       "  interclasează(stânga, mijloc, dreapta)"
-    ]
+    ],
+    pros: ["O(n log n) garantat în orice caz", "Stabil — ideal când ordinea elementelor egale contează", "Ușor de paralelizat pe sisteme multi-core"],
+    cons: ["Necesită O(n) memorie auxiliară pentru interclasare", "Overhead mai mare decât Quick Sort în practică pe date aleatorii"],
+    note: "Merge Sort a fost inventat de John von Neumann în 1945, unul dintre primii algoritmi eficienți proiectați special pentru calculatoare."
   },
   quickSort: {
     id: "quickSort",
@@ -64,7 +73,10 @@ export const ALGORITHMS = {
       "  dacă v[j] ≤ pivot → mută la stânga",
       "plasează pivot pe poziția finală",
       "apelează recursiv pe subvectori"
-    ]
+    ],
+    pros: ["Cel mai rapid în practică pe date aleatorii", "O(log n) memorie (recursie in-place)", "Cache-friendly — accesează memoria secvențial în partiționare"],
+    cons: ["O(n²) în cazul cel mai rău (pivot ales prost pe date sortate)", "Nu este stabil"],
+    note: "Quick Sort a fost publicat de C.A.R. Hoare în 1959. În ciuda cazului cel mai rău O(n²), în practică bate Merge Sort datorită constantelor mai mici și accesului cache mai eficient."
   },
   linearSearch: {
     id: "linearSearch",
@@ -80,7 +92,10 @@ export const ALGORITHMS = {
       "  dacă v[i] == țintă:",
       "    returnează i (găsit)",
       "returnează -1 (negăsit)"
-    ]
+    ],
+    pros: ["Funcționează pe orice vector, sortat sau nu", "O(1) memorie", "Simplu de implementat și de înțeles"],
+    cons: ["O(n) în cazul cel mai rău — lent pe vectori mari", "Nu exploatează nicio structură a datelor"],
+    note: "Pe liste înlănțuite, Căutarea Liniară este singurul algoritm posibil — accesul aleatoriu necesar pentru Căutarea Binară nu este disponibil."
   },
   insertionSort: {
     id: "insertionSort",
@@ -98,7 +113,10 @@ export const ALGORITHMS = {
       "  cât timp j ≥ 1 și v[j] > cheie:",
       "    v[j+1] = v[j]; j = j - 1",
       "  v[j+1] = cheie"
-    ]
+    ],
+    pros: ["O(n) pe vectori deja sortați sau aproape sortați", "Stabil și eficient pe date mici", "Funcționează online — poate sorta date care sosesc pe rând"],
+    cons: ["O(n²) în cazul cel mai rău (vector sortat descrescător)", "Ineficient pentru n mare"],
+    note: "Este algoritmul folosit intuitiv de oameni când sortează cărțile de joc: luăm fiecare carte și o inserăm la locul corect în mâna deja sortată."
   },
   binarySearch: {
     id: "binarySearch",
@@ -116,7 +134,10 @@ export const ALGORITHMS = {
       "  dacă v[mijloc] == țintă: găsit!",
       "  dacă v[mijloc] < țintă: stânga = mijloc+1",
       "  altfel: dreapta = mijloc-1"
-    ]
+    ],
+    pros: ["O(log n) — extrem de rapid: 1.000.000 elemente → maxim 20 pași", "O(1) memorie", "Garantează găsirea sau absența elementului"],
+    cons: ["Necesită vector sortat în prealabil — sortarea adaugă O(n log n)", "Nu funcționează pe liste înlănțuite (acces aleatoriu necesar)"],
+    note: "Pe un vector de 4 miliarde de elemente, Căutarea Binară găsește orice element în maxim 32 de comparații — față de 4 miliarde pentru cea liniară."
   },
   heapSort: {
     id: "heapSort",
@@ -133,7 +154,10 @@ export const ALGORITHMS = {
       "pentru i = n → 2:",
       "  interschimbă v[1] cu v[i]",
       "  heapify(v, i-1, 1)"
-    ]
+    ],
+    pros: ["O(n log n) garantat în orice caz", "O(1) memorie — sortare in-place fără vector auxiliar", "Ideal când memoria e limitată și garanția de timp e importantă"],
+    cons: ["Nu este stabil", "Mai lent decât Quick Sort în practică (acces non-secvențial la memorie în heapify)", "Cod mai complex de scris și de înțeles"],
+    note: "Heap Sort este folosit ca fallback în IntroSort (implementarea std::sort din C++): dacă Quick Sort se comportă prost, algoritmul comută automat pe Heap Sort."
   },
   countingSort: {
     id: "countingSort",
@@ -149,7 +173,10 @@ export const ALGORITHMS = {
       "pentru val = 0 → max(v):",
       "  cât timp f[val] > 0:",
       "    plasează val în output; f[val]--"
-    ]
+    ],
+    pros: ["O(n+k) — mai rapid decât O(n log n) când k este mic", "Stabil în implementarea cu tablou cumulativ", "Simplu de implementat și de înțeles conceptual"],
+    cons: ["Necesită O(k) memorie pentru tabloul de frecvențe", "Funcționează doar pentru valori întregi nenegative", "Ineficient când k >> n (valori mari, puține elemente)"],
+    note: "Counting Sort este folosit intern în Radix Sort ca subroutine: sortând cifră cu cifră (de la cea mai puțin semnificativă), fiecare rundă aplică Counting Sort."
   },
   euclid: {
     id: "euclid",
@@ -166,7 +193,10 @@ export const ALGORITHMS = {
       "  a = b",
       "  b = r",
       "afișează a  (= CMMDC)"
-    ]
+    ],
+    pros: ["O(log min(a,b)) — extrem de eficient, converge rapid", "Simplu de implementat în 5 linii", "Baza pentru CMMMC, fracții ireductibile, criptografie RSA"],
+    cons: ["Calculează CMMDC-ul a doar două numere odată", "Nu produce factorizarea, ci doar CMMDC-ul"],
+    note: "Algoritmul lui Euclid, descris în «Elementele» (~300 î.Hr.), este unul dintre cei mai vechi algoritmi cunoscuți și este folosit nemodificat și astăzi, 2300 de ani mai târziu."
   },
   isPrime: {
     id: "isPrime",
@@ -182,7 +212,10 @@ export const ALGORITHMS = {
       "pentru d = 2 → √n:",
       "  dacă n mod d = 0: NU ESTE PRIM",
       "ESTE PRIM"
-    ]
+    ],
+    pros: ["O(√n) — eficient pentru numere până la ~10⁹", "Simplu de implementat", "O(1) memorie"],
+    cons: ["Lent pentru numere foarte mari (10¹⁵+) — se preferă teste probabilistice (Miller-Rabin)", "Testează fiecare număr individual — ineficient pentru a găsi TOATE primele până la n"],
+    note: "Există numere Carmichael (ex: 561 = 3×11×17) care «păcălesc» testele simple bazate pe Teorema lui Fermat, dar nu și testul prin împărțire la toți divizorii până la √n."
   },
   sieve: {
     id: "sieve",
@@ -200,7 +233,10 @@ export const ALGORITHMS = {
       "    pentru j = i² → n, pas i:",
       "      ciur[j] = fals",
       "afișează i unde ciur[i] = adevărat"
-    ]
+    ],
+    pros: ["O(n log log n) — cel mai eficient algoritm pentru toate primele până la n", "Simplu de implementat (un singur array boolean)", "Structură de date minimă"],
+    cons: ["Necesită O(n) memorie — impractibil pentru n > 10⁸", "Nu este practic pentru a testa un singur număr individual"],
+    note: "Eratostene din Cyrene (~276-194 î.Hr.) a creat acest algoritm cu 2200 de ani în urmă. Versiuni optimizate (Ciurul lui Atkin) sunt folosite azi pentru calculul primelor mari."
   },
   bfs: {
     id: "bfs",
@@ -218,7 +254,10 @@ export const ALGORITHMS = {
       "  nod ← extrage din coadă",
       "  pentru fiecare vecin nevizitat:",
       "    adaugă în coadă și marchează"
-    ]
+    ],
+    pros: ["Garantează drumul cel mai scurt în grafuri neponderate", "Detectează dacă un graf este conex", "Vizitează nodurile nivel cu nivel — util în probleme de tipul «cel mai apropiat»"],
+    cons: ["Necesită O(V) memorie pentru coadă", "Mai lent decât DFS pe grafuri dense când distanța nu contează"],
+    note: "BFS este folosit de Google Maps pentru rutare în rețele de transport și de rețelele sociale pentru sugestia «prieteni pe care îi poți cunoaște» (noduri la distanță 2)."
   },
   dfs: {
     id: "dfs",
@@ -236,7 +275,10 @@ export const ALGORITHMS = {
       "  nod ← extrage din vârful stivei",
       "  pentru fiecare vecin nevizitat:",
       "    adaugă în stivă și marchează"
-    ]
+    ],
+    pros: ["O(V) memorie (stivă de recursie)", "Detectează cicluri, componente conexe și sortare topologică", "Natural recursiv — cod concis"],
+    cons: ["Nu garantează drumul cel mai scurt", "Poate provoca stack overflow pe grafuri cu mii de noduri (recursie adâncă)"],
+    note: "DFS este baza algoritmilor Tarjan și Kosaraju pentru componente tare conexe, și a algoritmilor clasici de rezolvare a labirinturilor prin backtracking."
   }
 };
 

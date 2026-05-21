@@ -64,6 +64,8 @@ export default {
   about_yes:    "Da",
   about_no:     "Nu",
   about_when:   "Când se folosește:",
+  about_pros:   "Avantaje",
+  about_cons:   "Dezavantaje",
 
   // Pseudocod / C++
   tab_pseudo: "Pseudocod",

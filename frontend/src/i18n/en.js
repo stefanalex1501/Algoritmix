@@ -64,6 +64,8 @@ export default {
   about_yes:    "Yes",
   about_no:     "No",
   about_when:   "When to use:",
+  about_pros:   "Advantages",
+  about_cons:   "Disadvantages",
 
   // Pseudocode / C++
   tab_pseudo: "Pseudocode",
