@@ -94,6 +94,7 @@ export default {
   stats_by_algo:    "By algorithm (visual questions)",
   stats_visual:     "Visual",
   stats_text:       "Text",
+  stats_pseudocode: "Pseudocode",
   stats_mistakes:   "To remember",
   stats_no_data:    "Use the Simulator and Quiz to see session statistics.",
   stats_no_mistakes:"No mistakes recorded — keep it up!",

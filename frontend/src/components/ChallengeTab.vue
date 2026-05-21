@@ -47,8 +47,10 @@
 import { ref, computed } from "vue";
 import { ALGORITHMS } from "../algorithms.js";
 import { useI18n } from "../i18n/index.js";
+import { useStats } from "../composables/useStats.js";
 
 const { t } = useI18n();
+const { recordPseudocodeAnswer } = useStats();
 
 const QUESTIONS = [
   // ── Bubble Sort ────────────────────────────────────────
@@ -221,6 +223,11 @@ function answer(optIdx) {
   wasCorrect.value = q.value.options[optIdx] === q.value.correct;
   score.value.total++;
   if (wasCorrect.value) score.value.correct++;
+  recordPseudocodeAnswer(
+    q.value.algo,
+    wasCorrect.value,
+    `${algoName.value} — linia ${q.value.blankLine + 1}`
+  );
 }
 
 function next() {

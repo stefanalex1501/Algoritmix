@@ -94,6 +94,7 @@ export default {
   stats_by_algo:    "Pe algoritm (întrebări vizuale)",
   stats_visual:     "Vizual",
   stats_text:       "Text",
+  stats_pseudocode: "Pseudocod",
   stats_mistakes:   "De reținut",
   stats_no_data:    "Folosește Simulatorul și Quiz-ul pentru a vedea statistici ale sesiunii.",
   stats_no_mistakes:"Nicio greșeală înregistrată — continuă tot așa!",

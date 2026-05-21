@@ -330,6 +330,7 @@ button.danger:hover { background: #b03030; }
 .dot-ok  { color: #4ade80; }
 .dot-bad { color: #f87171; }
 .recent-text { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+.recent-type-badge { font-size: 10px; font-weight: 700; background: var(--accent); color: #fff; border-radius: 4px; padding: 1px 5px; flex-shrink: 0; letter-spacing: .04em; }
 
 /* ── Conținut ── */
 .cnt-title { font-size: 12px; font-weight: 600; color: var(--text-label); text-transform: uppercase; letter-spacing: 0.06em; margin: 18px 0 10px; }

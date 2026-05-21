@@ -51,6 +51,36 @@
       </div>
     </template>
 
+    <template v-if="stats.quiz.byType.visual.total > 0 || stats.quiz.byType.text.total > 0 || stats.quiz.byType.pseudocode.total > 0">
+      <h3 class="stats-section-title">{{ t('stats_by_type') }}</h3>
+      <div class="algo-stats-list">
+        <div v-if="stats.quiz.byType.visual.total > 0" class="algo-stat-row">
+          <span class="algo-stat-name">{{ t('stats_visual') }}</span>
+          <div class="stats-bar-track">
+            <div class="stats-bar-fill" :class="algoBarClass(stats.quiz.byType.visual)" :style="{ width: algoAccuracy(stats.quiz.byType.visual) + '%' }"></div>
+          </div>
+          <span class="algo-stat-pct" :class="algoBarClass(stats.quiz.byType.visual)">{{ algoAccuracy(stats.quiz.byType.visual) }}%</span>
+          <span class="algo-stat-count">{{ stats.quiz.byType.visual.correct }}/{{ stats.quiz.byType.visual.total }}</span>
+        </div>
+        <div v-if="stats.quiz.byType.text.total > 0" class="algo-stat-row">
+          <span class="algo-stat-name">{{ t('stats_text') }}</span>
+          <div class="stats-bar-track">
+            <div class="stats-bar-fill" :class="algoBarClass(stats.quiz.byType.text)" :style="{ width: algoAccuracy(stats.quiz.byType.text) + '%' }"></div>
+          </div>
+          <span class="algo-stat-pct" :class="algoBarClass(stats.quiz.byType.text)">{{ algoAccuracy(stats.quiz.byType.text) }}%</span>
+          <span class="algo-stat-count">{{ stats.quiz.byType.text.correct }}/{{ stats.quiz.byType.text.total }}</span>
+        </div>
+        <div v-if="stats.quiz.byType.pseudocode.total > 0" class="algo-stat-row">
+          <span class="algo-stat-name">{{ t('stats_pseudocode') }}</span>
+          <div class="stats-bar-track">
+            <div class="stats-bar-fill" :class="algoBarClass(stats.quiz.byType.pseudocode)" :style="{ width: algoAccuracy(stats.quiz.byType.pseudocode) + '%' }"></div>
+          </div>
+          <span class="algo-stat-pct" :class="algoBarClass(stats.quiz.byType.pseudocode)">{{ algoAccuracy(stats.quiz.byType.pseudocode) }}%</span>
+          <span class="algo-stat-count">{{ stats.quiz.byType.pseudocode.correct }}/{{ stats.quiz.byType.pseudocode.total }}</span>
+        </div>
+      </div>
+    </template>
+
     <template v-if="Object.keys(stats.quiz.byAlgorithm).length > 0">
       <h3 class="stats-section-title">{{ t('stats_by_algo') }}</h3>
       <div class="algo-stats-list">
@@ -80,6 +110,7 @@
       <div class="recent-list">
         <div v-for="a in stats.quiz.recent" :key="a.id" class="recent-item">
           <span class="recent-dot" :class="a.correct ? 'dot-ok' : 'dot-bad'">{{ a.correct ? '✓' : '✗' }}</span>
+          <span class="recent-type-badge" v-if="a.type === 'pseudocode'">P</span>
           <span class="recent-text">{{ a.prompt }}</span>
         </div>
       </div>

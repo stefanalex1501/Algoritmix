@@ -6,8 +6,9 @@ const stats = reactive({
   quiz: {
     total: 0, correct: 0, bestStreak: 0,
     byType: {
-      visual: { total: 0, correct: 0 },
-      text:   { total: 0, correct: 0 },
+      visual:    { total: 0, correct: 0 },
+      text:      { total: 0, correct: 0 },
+      pseudocode:{ total: 0, correct: 0 },
     },
     byAlgorithm: {},
     recent: [],
@@ -56,11 +57,23 @@ function trackAlgorithm(algoId, correct) {
   if (correct) stats.quiz.byAlgorithm[algoId].correct++;
 }
 
+function recordPseudocodeAnswer(algoId, correct, prompt) {
+  stats.quiz.total++;
+  if (correct) stats.quiz.correct++;
+  stats.quiz.byType.pseudocode.total++;
+  if (correct) stats.quiz.byType.pseudocode.correct++;
+  trackAlgorithm(algoId, correct);
+  stats.quiz.recent.unshift({ correct, prompt, id: stats.quiz.total, type: "pseudocode" });
+  if (stats.quiz.recent.length > 15) stats.quiz.recent.pop();
+  saveStats();
+}
+
 function resetStats() {
   stats.quiz.total = 0; stats.quiz.correct = 0; stats.quiz.bestStreak = 0;
-  stats.quiz.byType.visual = { total: 0, correct: 0 };
-  stats.quiz.byType.text   = { total: 0, correct: 0 };
-  stats.quiz.byAlgorithm   = {};
+  stats.quiz.byType.visual     = { total: 0, correct: 0 };
+  stats.quiz.byType.text       = { total: 0, correct: 0 };
+  stats.quiz.byType.pseudocode = { total: 0, correct: 0 };
+  stats.quiz.byAlgorithm       = {};
   stats.quiz.recent = [];
   stats.sim.runs = 0;
   stats.mistakes = [];
@@ -69,5 +82,5 @@ function resetStats() {
 }
 
 export function useStats() {
-  return { stats, quizSession, accuracy, saveStats, loadStats, resetStats, trackAlgorithm };
+  return { stats, quizSession, accuracy, saveStats, loadStats, resetStats, trackAlgorithm, recordPseudocodeAnswer };
 }
