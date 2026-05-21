@@ -49,6 +49,37 @@ export const CPP_LINE_MAP = {
     4: [24, 25],    // else if(a[mij] < tinta) { st = mij + 1; }
     5: [26, 27]     // else { dr = mij - 1; }
   },
+  heapSort: {
+    0: [3, 4, 5, 6, 7, 8, 9],  // heapify body
+    1: [3, 8, 9],               // swap in heapify
+    2: [14],                    // build heap loop
+    3: [17],                    // swap a[1] with a[i]
+    4: [18]                     // heapify call
+  },
+  countingSort: {
+    0: [11, 12],   // count loop
+    1: [13],       // output comment
+    2: [14, 15]    // output loop
+  },
+  euclid: {
+    0: [6],        // while(b != 0)
+    1: [7],        // r = a % b
+    2: [8, 9],     // a = b; b = r
+    4: [11]        // cout << a
+  },
+  isPrime: {
+    0: [6, 7],     // if(n < 2) prim = false
+    1: [8],        // for(d = 2; d*d <= n; d++)
+    2: [9, 10],    // if(n % d == 0) { prim = false; break; }
+    3: [12, 13]    // if(prim) cout << "PRIM"
+  },
+  sieve: {
+    0: [7],        // for init
+    1: [8],        // for i=2
+    2: [9],        // if(ciur[i])
+    3: [11],       // ciur[j] = 0
+    5: [13, 14]    // output
+  },
   bfs: {
     0: [19, 20],    // c[1] = s; viz[s] = 1
     3: [23, 24],    // x = c[st]; st++
@@ -288,6 +319,113 @@ int main()
         cout << "Gasit la pozitia " << rezultat;
     else
         cout << "Negasit";
+    return 0;
+}`,
+
+  heapSort:
+`#include <iostream>
+
+using namespace std;
+
+void heapify(int a[], int n, int i)
+{
+    int mx = i, st = 2*i, dr = 2*i+1;
+    if(st <= n && a[st] > a[mx]) mx = st;
+    if(dr <= n && a[dr] > a[mx]) mx = dr;
+    if(mx != i) { swap(a[i], a[mx]); heapify(a, n, mx); }
+}
+
+void heapsort(int a[], int n)
+{
+    for(int i = n/2; i >= 1; i--) heapify(a, n, i);
+    for(int i = n; i >= 2; i--)
+    {
+        swap(a[1], a[i]);
+        heapify(a, i-1, 1);
+    }
+}
+
+int main()
+{
+    int n, a[1001];
+    cin >> n;
+    for(int i = 1; i <= n; i++) cin >> a[i];
+    heapsort(a, n);
+    for(int i = 1; i <= n; i++) cout << a[i] << " ";
+    return 0;
+}`,
+
+  countingSort:
+`#include <iostream>
+
+using namespace std;
+
+int n, a[101], f[1001], mx, i;
+
+int main()
+{
+    cin >> n;
+    for(i = 1; i <= n; i++) { cin >> a[i]; f[a[i]]++; if(a[i]>mx) mx=a[i]; }
+    for(i = 0; i <= mx; i++) while(f[i]--) cout << i << " ";
+    return 0;
+}`,
+
+  euclid:
+`#include <iostream>
+
+using namespace std;
+
+int a, b, r;
+
+int main()
+{
+    cin >> a >> b;
+    while(b != 0)
+    {
+        r = a % b;
+        a = b;
+        b = r;
+    }
+    cout << a;
+    return 0;
+}`,
+
+  isPrime:
+`#include <iostream>
+
+using namespace std;
+
+int n, d;
+
+int main()
+{
+    bool prim = true;
+    cin >> n;
+    if(n < 2) prim = false;
+    for(d = 2; d*d <= n; d++)
+        if(n % d == 0) { prim = false; break; }
+    if(prim) cout << "PRIM";
+    else     cout << "NU";
+    return 0;
+}`,
+
+  sieve:
+`#include <iostream>
+
+using namespace std;
+
+int n, ciur[1001], i, j;
+
+int main()
+{
+    cin >> n;
+    for(i = 2; i <= n; i++) ciur[i] = 1;
+    for(i = 2; i*i <= n; i++)
+        if(ciur[i])
+            for(j = i*i; j <= n; j += i)
+                ciur[j] = 0;
+    for(i = 2; i <= n; i++)
+        if(ciur[i]) cout << i << " ";
     return 0;
 }`,
 

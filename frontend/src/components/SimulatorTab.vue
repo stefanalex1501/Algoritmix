@@ -23,9 +23,22 @@
       </div>
 
       <div v-if="sim.algorithm !== 'bfs' && sim.algorithm !== 'dfs'" class="row">
-        <label>{{ sim.algorithm === 'binarySearch' ? t('label_vector_sorted') : t('label_vector') }}</label>
+        <label>{{
+          sim.algorithm === 'binarySearch' ? t('label_vector_sorted') :
+          sim.algorithm === 'euclid'       ? t('label_euclid_ab') :
+          sim.algorithm === 'isPrime'      ? t('label_prime_n') :
+          sim.algorithm === 'sieve'        ? t('label_sieve_n') :
+          t('label_vector')
+        }}</label>
         <div class="input-with-btn">
-          <input v-model="sim.vectorInput" :placeholder="sim.algorithm === 'binarySearch' ? 'ex: 1, 3, 5, 7, 9, 11, 14' : 'ex: 8, 2, 6, 1, 4'" />
+          <input v-model="sim.vectorInput"
+            :placeholder="sim.algorithm === 'binarySearch' ? 'ex: 1, 3, 5, 7, 9, 11, 14' :
+                          sim.algorithm === 'euclid'       ? 'ex: 48, 18' :
+                          sim.algorithm === 'isPrime'      ? 'ex: 97' :
+                          sim.algorithm === 'sieve'        ? 'ex: 50' : 'ex: 8, 2, 6, 1, 4'"
+            :type="['isPrime','sieve'].includes(sim.algorithm) ? 'number' : 'text'"
+            :min="sim.algorithm === 'sieve' ? 5 : 2"
+            :max="sim.algorithm === 'sieve' ? 100 : undefined" />
           <button class="btn-rand" @click="randomVector" :title="t('btn_random')">{{ t('btn_random') }}</button>
         </div>
       </div>
@@ -134,6 +147,49 @@
         </div>
       </div>
 
+      <!-- Algoritmul lui Euclid -->
+      <div v-else-if="sim.algorithm === 'euclid'" class="euclid-viz">
+        <div class="euclid-display">
+          <div class="euclid-var"><span class="euclid-label">a</span><span class="euclid-val">{{ currentStep.euclidA }}</span></div>
+          <div class="euclid-var"><span class="euclid-label">b</span><span class="euclid-val">{{ currentStep.euclidB }}</span></div>
+          <div class="euclid-var" v-if="currentStep.euclidR !== null && currentStep.euclidR !== undefined">
+            <span class="euclid-label">r = a mod b</span>
+            <span class="euclid-val euclid-r">{{ currentStep.euclidR }}</span>
+          </div>
+        </div>
+        <div class="euclid-result" v-if="currentStep.result !== undefined">
+          CMMDC = <strong>{{ currentStep.result }}</strong>
+        </div>
+      </div>
+
+      <!-- Verificare număr prim -->
+      <div v-else-if="sim.algorithm === 'isPrime'" class="prime-viz">
+        <div class="prime-number">{{ currentStep.primeN }}</div>
+        <div class="prime-test" v-if="currentStep.primeD">
+          <span class="prime-d">d = {{ currentStep.primeD }}</span>
+          <span class="prime-mod">{{ currentStep.primeN }} mod {{ currentStep.primeD }} = {{ currentStep.primeN % currentStep.primeD }}</span>
+        </div>
+        <div class="prime-verdict"
+          :class="currentStep.verdict === 'prime' ? 'verdict-prime' : currentStep.verdict === 'not_prime' ? 'verdict-not' : ''"
+          v-if="currentStep.verdict">
+          {{ currentStep.verdict === 'prime' ? t('prime_yes') : t('prime_no') }}
+        </div>
+      </div>
+
+      <!-- Ciurul lui Eratostene -->
+      <div v-else-if="sim.algorithm === 'sieve'" class="sieve-viz">
+        <div class="sieve-grid">
+          <div v-for="num in currentStep.sieveN - 1" :key="num"
+               class="sieve-num" :class="sieveCellClass(num + 1)">{{ num + 1 }}</div>
+        </div>
+        <div class="bar-legend" style="margin-top:10px">
+          <span class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span>Prim</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#f0c040"></span>Prim curent</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>Marcat compus</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#1a2d40"></span>Compus</span>
+        </div>
+      </div>
+
       <!-- Bar chart sortare -->
       <div v-else-if="sim.algorithm !== 'bfs' && sim.algorithm !== 'dfs'" class="bars-container">
         <div class="bars">
@@ -160,6 +216,14 @@
         <div v-else-if="sim.algorithm === 'mergeSort'" class="bar-legend">
           <span class="legend-item"><span class="legend-dot" style="background:#7c3aed"></span>{{ t('legend_merge_range') }}</span>
           <span class="legend-item"><span class="legend-dot" style="background:#f0c040"></span>{{ t('legend_compared') }}</span>
+        </div>
+        <div v-else-if="sim.algorithm === 'heapSort'" class="bar-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:#f0c040"></span>{{ t('legend_compared') }}</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#1a4a2a"></span>{{ t('legend_sorted') }}</span>
+        </div>
+        <div v-else-if="sim.algorithm === 'countingSort'" class="bar-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:#f0c040"></span>{{ t('legend_active') }}</span>
+          <span class="legend-item"><span class="legend-dot" style="background:#1a4a2a"></span>{{ t('legend_sorted') }}</span>
         </div>
         <div v-else class="bar-legend">
           <span class="legend-item"><span class="legend-dot" style="background:#c89000"></span>{{ t('legend_compared') }}</span>
@@ -251,7 +315,8 @@
 
 <script setup>
 import { ref, computed, watch, onBeforeUnmount } from "vue";
-import { ALGORITHMS, parseVector, buildSteps, GRAPH_PRESETS } from "../algorithms.js";
+import { ALGORITHMS, parseVector, buildSteps, GRAPH_PRESETS,
+  heapSortSteps, countingSortSteps, euclidSteps, isPrimeSteps, sieveSteps } from "../algorithms.js";
 import ComplexityChart from "./ComplexityChart.vue";
 import RecursionTree  from "./RecursionTree.vue";
 import { CPP_SNIPPETS, CPP_LINE_MAP } from "../cppSnippets.js";
@@ -338,11 +403,32 @@ const maxVal = computed(() => Math.max(...(steps.value[0]?.array || [1]), 1));
 const minVal = computed(() => { const a = steps.value[0]?.array; return a?.length ? Math.min(...a) : 0; });
 function barHeight(val) { return Math.max(Math.round((val / maxVal.value) * 160), 6); }
 
+function sieveCellClass(num) {
+  const s = currentStep.value;
+  if (!s.primes) return "sieve-composite";
+  if (num === s.markingVal)   return "sieve-marking";
+  if (num === s.currentPrime) return "sieve-current";
+  if (s.primes[num])          return "sieve-prime";
+  return "sieve-composite";
+}
+
 function barStyle(val, idx) {
   const step = currentStep.value;
   const h = barHeight(val) + "px";
   const hue = () => Math.round(220 - ((val - minVal.value) / (maxVal.value - minVal.value || 1)) * 220);
 
+  if (sim.algorithm === "heapSort") {
+    const { active, heapSortedFrom } = step;
+    if (heapSortedFrom !== undefined && idx >= heapSortedFrom) return { height: h, background: "#1a4a2a" };
+    if (active?.includes(idx)) return { height: h, background: "#f0c040", boxShadow: "0 0 16px #f0c04099" };
+    return { height: h, background: `hsl(${hue()}, 72%, 52%)` };
+  }
+  if (sim.algorithm === "countingSort") {
+    const { active, sortedUpTo } = step;
+    if (sortedUpTo !== undefined && idx < sortedUpTo) return { height: h, background: "#1a4a2a" };
+    if (active?.includes(idx)) return { height: h, background: "#f0c040", boxShadow: "0 0 16px #f0c04099" };
+    return { height: h, background: `hsl(${hue()}, 72%, 52%)` };
+  }
   if (sim.algorithm === "selectionSort") {
     const { active, minIdx, sortedUpTo } = step;
     if (sortedUpTo !== undefined && idx < sortedUpTo) return { height: h, background: "#1a4a2a" };
@@ -482,6 +568,22 @@ function togglePredict() {
 }
 
 function randomVector() {
+  if (sim.algorithm === "euclid") {
+    const a = Math.floor(Math.random() * 90) + 10;
+    const b = Math.floor(Math.random() * 50) + 2;
+    sim.vectorInput = `${a}, ${b}`;
+    buildSimulation(); return;
+  }
+  if (sim.algorithm === "isPrime") {
+    const pool = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,97,
+                  4,6,9,10,15,21,25,35,49,51,77,91];
+    sim.vectorInput = String(pool[Math.floor(Math.random() * pool.length)]);
+    buildSimulation(); return;
+  }
+  if (sim.algorithm === "sieve") {
+    sim.vectorInput = String(20 + Math.floor(Math.random() * 31));
+    buildSimulation(); return;
+  }
   const len = 6 + Math.floor(Math.random() * 4);
   if (sim.algorithm === "binarySearch") {
     const raw = Array.from({ length: len }, () => 1 + Math.floor(Math.random() * 20));
@@ -520,6 +622,13 @@ async function buildSimulation() {
     const vec = parseVector(sim.vectorInput);
     const t2  = Number(sim.targetInput);
     payload   = { vector: vec, target: Number.isFinite(t2) ? t2 : vec[0] ?? 0 };
+  } else if (sim.algorithm === "euclid") {
+    const nums = parseVector(sim.vectorInput);
+    payload = { a: nums[0] || 48, b: nums[1] || 18 };
+  } else if (sim.algorithm === "isPrime") {
+    payload = { n: parseVector(sim.vectorInput)[0] || 17 };
+  } else if (sim.algorithm === "sieve") {
+    payload = { n: parseVector(sim.vectorInput)[0] || 30 };
   } else {
     payload = { vector: parseVector(sim.vectorInput) };
   }

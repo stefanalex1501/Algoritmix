@@ -118,6 +118,90 @@ export const ALGORITHMS = {
       "  altfel: dreapta = mijloc-1"
     ]
   },
+  heapSort: {
+    id: "heapSort",
+    name: "Heap Sort",
+    category: "Sortare",
+    grade: 11,
+    complexity: { best: "O(n log n)", avg: "O(n log n)", worst: "O(n log n)", space: "O(1)" },
+    stable: false,
+    info: "Sortează folosind un heap maxim: mai întâi construiește structura heap, apoi extrage repetat elementul maxim și îl plasează la sfârșitul vectorului.",
+    when: "Când complexitatea O(n log n) garantată și memoria O(1) sunt ambele importante. Mai lent în practică față de Quick Sort.",
+    pseudocode: [
+      "construiește heap maxim:",
+      "  pentru i = n/2 → 1: heapify(v, n, i)",
+      "pentru i = n → 2:",
+      "  interschimbă v[1] cu v[i]",
+      "  heapify(v, i-1, 1)"
+    ]
+  },
+  countingSort: {
+    id: "countingSort",
+    name: "Counting Sort",
+    category: "Sortare",
+    grade: 11,
+    complexity: { best: "O(n+k)", avg: "O(n+k)", worst: "O(n+k)", space: "O(k)" },
+    stable: true,
+    info: "Sortare fără comparații: numără frecvența fiecărei valori, apoi reconstruiește vectorul sortat. k = valoarea maximă din vector.",
+    when: "Valori întregi într-un interval mic (ex: note 1-10, vârste 0-120). Extrem de rapid când k este mic față de n.",
+    pseudocode: [
+      "pentru i = 1 → n: f[v[i]]++",
+      "pentru val = 0 → max(v):",
+      "  cât timp f[val] > 0:",
+      "    plasează val în output; f[val]--"
+    ]
+  },
+  euclid: {
+    id: "euclid",
+    name: "Algoritmul lui Euclid (CMMDC)",
+    category: "Matematică",
+    grade: 9,
+    complexity: { best: "O(log n)", avg: "O(log n)", worst: "O(log n)", space: "O(1)" },
+    stable: null,
+    info: "Calculează cel mai mare divizor comun (CMMDC) al două numere prin împărțiri repetate. La fiecare pas: r = a mod b, a ← b, b ← r.",
+    when: "Ori de câte ori este nevoie de CMMDC. Baza pentru CMMMC, fracții ireductibile, criptografie RSA.",
+    pseudocode: [
+      "cât timp b ≠ 0:",
+      "  r = a mod b",
+      "  a = b",
+      "  b = r",
+      "afișează a  (= CMMDC)"
+    ]
+  },
+  isPrime: {
+    id: "isPrime",
+    name: "Verificare număr prim",
+    category: "Matematică",
+    grade: 9,
+    complexity: { best: "O(1)", avg: "O(√n)", worst: "O(√n)", space: "O(1)" },
+    stable: null,
+    info: "Verifică dacă n este prim testând toți divizorii de la 2 la √n. Dacă niciunul nu divide n, atunci n este prim.",
+    when: "Verificare rapidă a primalității unui număr. Eficient pentru n până la ~10⁹.",
+    pseudocode: [
+      "dacă n < 2: NU ESTE PRIM",
+      "pentru d = 2 → √n:",
+      "  dacă n mod d = 0: NU ESTE PRIM",
+      "ESTE PRIM"
+    ]
+  },
+  sieve: {
+    id: "sieve",
+    name: "Ciurul lui Eratostene",
+    category: "Matematică",
+    grade: 10,
+    complexity: { best: "O(n log log n)", avg: "O(n log log n)", worst: "O(n log log n)", space: "O(n)" },
+    stable: null,
+    info: "Găsește toate numerele prime până la n. Pornește de la 2 și marchează toți multiplii ca numere compuse, repetând pentru fiecare număr nemarcabil.",
+    when: "Când sunt necesare toate numerele prime până la n. Mult mai eficient decât testarea fiecărui număr separat.",
+    pseudocode: [
+      "pentru i = 2 → n: ciur[i] = adevărat",
+      "pentru i = 2 → √n:",
+      "  dacă ciur[i] = adevărat:",
+      "    pentru j = i² → n, pas i:",
+      "      ciur[j] = fals",
+      "afișează i unde ciur[i] = adevărat"
+    ]
+  },
   bfs: {
     id: "bfs",
     name: "BFS (Parcurgere Graf)",
@@ -530,6 +614,142 @@ export function dfsSteps(graph, start) {
   return steps;
 }
 
+export function heapSortSteps(vector) {
+  const a = [...vector];
+  const n = a.length;
+  let sortedFrom = n;
+  const steps = [{ array: [...a], active: [], message: "Vector inițial", pseudoLine: -1, heapSortedFrom: n }];
+
+  function heapify(heapSize, root) {
+    let mx = root;
+    const l = 2 * root + 1;
+    const r = 2 * root + 2;
+    if (l < heapSize && a[l] > a[mx]) mx = l;
+    if (r < heapSize && a[r] > a[mx]) mx = r;
+    const compared = [root, ...(l < heapSize ? [l] : []), ...(r < heapSize ? [r] : [])];
+    steps.push({ array: [...a], active: compared,
+      message: `Heapify: v[${root+1}]=${a[root]}${l<heapSize?`, v[${l+1}]=${a[l]}`:''}${r<heapSize?`, v[${r+1}]=${a[r]}`:''}`,
+      pseudoLine: 0, heapSortedFrom: sortedFrom });
+    if (mx !== root) {
+      [a[root], a[mx]] = [a[mx], a[root]];
+      steps.push({ array: [...a], active: [root, mx],
+        message: `Interschimbă v[${root+1}] ↔ v[${mx+1}]`,
+        pseudoLine: 1, heapSortedFrom: sortedFrom });
+      heapify(heapSize, mx);
+    }
+  }
+
+  steps.push({ array: [...a], active: [], message: "Construiesc heap maxim (i = n/2 → 1)", pseudoLine: 0, heapSortedFrom: n });
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) heapify(n, i);
+  steps.push({ array: [...a], active: [0], message: `Heap construit — maximul v[1]=${a[0]}`, pseudoLine: 1, heapSortedFrom: n });
+
+  for (let i = n - 1; i > 0; i--) {
+    steps.push({ array: [...a], active: [0, i],
+      message: `Extrag maximul v[1]=${a[0]} → poziția ${i+1}`,
+      pseudoLine: 3, heapSortedFrom: sortedFrom });
+    [a[0], a[i]] = [a[i], a[0]];
+    sortedFrom = i;
+    steps.push({ array: [...a], active: [0],
+      message: `Repar heap pe [1..${i}]`,
+      pseudoLine: 4, heapSortedFrom: sortedFrom });
+    heapify(i, 0);
+  }
+  steps.push({ array: [...a], active: [], message: "Sortare finalizată", pseudoLine: -1, heapSortedFrom: 0 });
+  return steps;
+}
+
+export function countingSortSteps(vector) {
+  const a = [...vector];
+  const n = a.length;
+  const steps = [{ array: [...a], active: [], message: "Vector inițial", pseudoLine: -1 }];
+  const max = Math.max(...a);
+  const freq = new Array(max + 1).fill(0);
+
+  for (let i = 0; i < n; i++) {
+    steps.push({ array: [...a], active: [i],
+      message: `Numărăm v[${i+1}]=${a[i]} → f[${a[i]}] devine ${freq[a[i]]+1}`,
+      pseudoLine: 0 });
+    freq[a[i]]++;
+  }
+  steps.push({ array: [...a], active: [], message: "Frecvențe calculate. Reconstruim vectorul sortat.", pseudoLine: 1 });
+
+  const out = [...a];
+  let k = 0;
+  for (let val = 0; val <= max; val++) {
+    while (freq[val] > 0) {
+      out[k] = val; k++; freq[val]--;
+      steps.push({ array: [...out], active: [k-1], sortedUpTo: k,
+        message: `Plasăm valoarea ${val} pe poziția ${k}`,
+        pseudoLine: 2 });
+    }
+  }
+  steps.push({ array: [...out], active: [], sortedUpTo: n, message: "Sortare finalizată", pseudoLine: -1 });
+  return steps;
+}
+
+export function euclidSteps(a, b) {
+  const steps = [{ euclidA: a, euclidB: b, euclidR: null,
+    message: `CMMDC(${a}, ${b}) — pornim algoritmul`, pseudoLine: 0 }];
+  while (b !== 0) {
+    const r = a % b;
+    steps.push({ euclidA: a, euclidB: b, euclidR: r,
+      message: `r = ${a} mod ${b} = ${r}`, pseudoLine: 1 });
+    a = b; b = r;
+    steps.push({ euclidA: a, euclidB: b, euclidR: null,
+      message: `a ← ${a},  b ← ${b}`, pseudoLine: 2 });
+  }
+  steps.push({ euclidA: a, euclidB: 0, euclidR: null, result: a,
+    message: `b = 0 → CMMDC = ${a}`, pseudoLine: 4 });
+  return steps;
+}
+
+export function isPrimeSteps(n) {
+  const steps = [{ primeN: n, primeD: null, verdict: null,
+    message: `Verificăm dacă ${n} este număr prim`, pseudoLine: -1 }];
+  if (n < 2) {
+    steps.push({ primeN: n, primeD: null, verdict: "not_prime",
+      message: `${n} < 2 → NU este prim`, pseudoLine: 0 });
+    return steps;
+  }
+  for (let d = 2; d * d <= n; d++) {
+    steps.push({ primeN: n, primeD: d, verdict: null,
+      message: `Testăm d=${d}: ${n} mod ${d} = ${n % d}`, pseudoLine: 1 });
+    if (n % d === 0) {
+      steps.push({ primeN: n, primeD: d, verdict: "not_prime",
+        message: `${n} = ${d} × ${n/d} → NU este prim`, pseudoLine: 2 });
+      return steps;
+    }
+  }
+  steps.push({ primeN: n, primeD: null, verdict: "prime",
+    message: `Niciun divizor până la √${n} ≈ ${Math.floor(Math.sqrt(n))} → ESTE PRIM`, pseudoLine: 3 });
+  return steps;
+}
+
+export function sieveSteps(n) {
+  n = Math.min(Math.max(n, 5), 100);
+  const primes = new Array(n + 1).fill(true);
+  primes[0] = primes[1] = false;
+  const steps = [{ sieveN: n, primes: [...primes], currentPrime: null, markingVal: null,
+    message: `Ciurul lui Eratostene până la ${n} — inițializăm toate ca prime`, pseudoLine: 0 }];
+
+  for (let i = 2; i * i <= n; i++) {
+    if (primes[i]) {
+      steps.push({ sieveN: n, primes: [...primes], currentPrime: i, markingVal: null,
+        message: `${i} este prim — marcăm multiplii: ${i}², ${i}²+${i}, …`, pseudoLine: 2 });
+      for (let j = i * i; j <= n; j += i) {
+        primes[j] = false;
+        steps.push({ sieveN: n, primes: [...primes], currentPrime: i, markingVal: j,
+          message: `Marcăm ${j} = ${i}×${j/i} ca număr compus`, pseudoLine: 3 });
+      }
+    }
+  }
+  const found = [];
+  for (let i = 2; i <= n; i++) if (primes[i]) found.push(i);
+  steps.push({ sieveN: n, primes: [...primes], currentPrime: null, markingVal: null,
+    message: `Gata! ${found.length} prime: ${found.slice(0, 10).join(", ")}${found.length > 10 ? "…" : ""}`, pseudoLine: 5 });
+  return steps;
+}
+
 /**
  * Dispatcher principal — selectează generatorul de pași potrivit.
  * @param {string} algorithmId - Id-ul algoritmului (ex: "bubbleSort", "bfs")
@@ -544,6 +764,11 @@ export function buildSteps(algorithmId, payload) {
   if (algorithmId === "quickSort")     return quickSortSteps(payload.vector || []);
   if (algorithmId === "linearSearch")  return linearSearchSteps(payload.vector || [], payload.target ?? 0);
   if (algorithmId === "binarySearch")  return binarySearchSteps(payload.vector || [], payload.target ?? 0);
+  if (algorithmId === "heapSort")      return heapSortSteps(payload.vector || []);
+  if (algorithmId === "countingSort")  return countingSortSteps(payload.vector || []);
+  if (algorithmId === "euclid")        return euclidSteps(payload.a || 48, payload.b || 18);
+  if (algorithmId === "isPrime")       return isPrimeSteps(payload.n || 17);
+  if (algorithmId === "sieve")         return sieveSteps(payload.n || 30);
   if (algorithmId === "bfs")           return bfsSteps(payload.graph, payload.startNode);
   if (algorithmId === "dfs")           return dfsSteps(payload.graph, payload.startNode);
   return [];

@@ -142,6 +142,13 @@ export default {
   challenge_algo:   "Algoritm",
   challenge_question: "Ce linie înlocuiește ???",
 
+  // Algoritmi matematici
+  label_euclid_ab: "Numerele a și b (ex: 48, 18)",
+  label_prime_n:   "Numărul n",
+  label_sieve_n:   "Limita n (max 100)",
+  prime_yes:       "✓ ESTE PRIM",
+  prime_no:        "✗ NU ESTE PRIM",
+
   // Mod predicție
   predict_toggle:      "Predicție",
   predict_instruction: "Click pe elementul care va fi activ în pasul următor",

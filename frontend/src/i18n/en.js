@@ -142,6 +142,13 @@ export default {
   challenge_algo:   "Algorithm",
   challenge_question: "Which line replaces ???",
 
+  // Math algorithms
+  label_euclid_ab: "Numbers a and b (e.g. 48, 18)",
+  label_prime_n:   "Number n",
+  label_sieve_n:   "Limit n (max 100)",
+  prime_yes:       "✓ IS PRIME",
+  prime_no:        "✗ NOT PRIME",
+
   // Predict mode
   predict_toggle:      "Predict",
   predict_instruction: "Click the element that will be active in the next step",

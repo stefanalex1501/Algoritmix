@@ -407,6 +407,35 @@ button.danger:hover { background: #b03030; }
 .predict-hit-ok  { outline: 3px solid #22c55e; box-shadow: 0 0 18px #22c55e99 !important; }
 .predict-hit-bad { outline: 3px solid #ef4444; box-shadow: 0 0 18px #ef444499 !important; }
 
+/* ── Euclid CMMDC ── */
+.euclid-viz { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 16px 0; }
+.euclid-display { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+.euclid-var { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.euclid-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+.euclid-val { font-size: 2.8rem; font-weight: 700; color: var(--accent-hi); font-variant-numeric: tabular-nums; min-width: 80px; text-align: center; }
+.euclid-r { color: #f0c040; }
+.euclid-result { font-size: 1.4rem; font-weight: 700; color: #4ade80; background: #0a2a14; border: 1px solid #22c55e; border-radius: 12px; padding: 10px 28px; }
+
+/* ── Verificare prim ── */
+.prime-viz { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 16px 0; }
+.prime-number { font-size: 4rem; font-weight: 700; color: var(--accent-hi); font-variant-numeric: tabular-nums; }
+.prime-test { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.prime-d { font-size: 1.2rem; font-weight: 600; color: #f0c040; background: #3a2a00; border: 1px solid #f0c040; padding: 6px 16px; border-radius: 8px; }
+.prime-mod { font-size: 1.1rem; color: var(--text-muted); font-family: monospace; }
+.prime-verdict { font-size: 1.3rem; font-weight: 700; padding: 10px 28px; border-radius: 12px; }
+.verdict-prime { background: #0a2a14; border: 1px solid #22c55e; color: #4ade80; }
+.verdict-not   { background: #2a0a0a; border: 1px solid #ef4444; color: #f87171; }
+
+/* ── Ciurul lui Eratostene ── */
+.sieve-viz { padding: 8px 0; }
+.sieve-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.sieve-num { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 13px; font-weight: 700; border: 2px solid transparent; transition: background .25s, border-color .25s, color .25s; }
+.sieve-prime     { background: #0a2040; border-color: var(--accent); color: var(--accent-hi); }
+.sieve-current   { background: #3a2a00; border-color: #f0c040; color: #f0c040; box-shadow: 0 0 10px #f0c04055; }
+.sieve-marking   { background: #2a0a0a; border-color: #ef4444; color: #f87171; }
+.sieve-composite { background: var(--bg-input); border-color: var(--border); color: var(--text-muted); opacity: 0.55; }
+@media (max-width: 700px) { .sieve-num { width: 30px; height: 30px; font-size: 11px; } .sieve-grid { gap: 4px; } }
+
 /* ── Misc ── */
 .muted { color: var(--text-muted); font-size: 14px; }
 .ok  { color: #4ade80; }
